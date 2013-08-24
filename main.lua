@@ -3,6 +3,9 @@ require 'koi'
 require 'bubble'
 require 'wall'
 
+koiFormVert = 1
+koiFormCircle = 2
+
 function love.load()
 	koi1 = Koi.create()
 	koi2 = Koi.create()
@@ -20,6 +23,9 @@ function love.load()
 
 	bubbleTimer = 0
 	meanBubbleTimer = 0
+
+	koiFormation = koiFormVert
+	koiCircleAngle = 0
 end
 
 function love.update(dt)
@@ -37,20 +43,8 @@ function love.update(dt)
 		rsex:update()
 	end
 
-	if math.hcoca(koi1.x, koi1.y, 40, koi2.x, koi2.y, 40) then
-		--love.win('<3')
-	end
-
 	koi1:update()
 	koi2:update()
-
-	if love.mouse.isDown('l') then
-		koi1.sexy = true
-		koi2.sexy = true
-	else
-		koi1.sexy = false
-		koi2.sexy = false
-	end
 
 	bubbleTimer = bubbleTimer + delta
 	if bubbleTimer > .05 then
@@ -63,9 +57,26 @@ function love.update(dt)
 		local b = MeanBubble.create()
 		meanBubbleTimer = 0
 	end
+
+	if koiFormation == koiFormCircle then
+		koiCircleAngle = koiCircleAngle + (2 * math.pi * delta)
+	end
 end
 
 function love.draw()
+	local w2 = love.graphics.getWidth() / 2
+	love.graphics.setColor(255, 255, 255, 20)
+	love.graphics.line(w2, 0, w2, love.graphics.getHeight())
+
+	if koiFormation == koiFormVert then
+		local dis = math.abs(love.mouse.getX() - w2)
+		love.graphics.line(w2 - dis, 0, w2 - dis, love.graphics.getHeight())
+		love.graphics.line(w2 + dis, 0, w2 + dis, love.graphics.getHeight())
+	elseif koiFormation == koiFormCircle then
+		local dis = math.abs(love.mouse.getX() - w2)
+		love.graphics.circle('line', w2, love.mouse.getY(), dis / 2)
+	end
+
 	koi1:draw()
 	koi2:draw()
 
@@ -84,11 +95,6 @@ function love.draw()
 	for _, wall in pairs(walls) do
 		wall:draw()
 	end
-end
-
-function love.win(heart)
-	print(heart)
-	love.restart()
 end
 
 function love.gameover()
@@ -113,4 +119,12 @@ function love.restart()
 
 	bubbles = {}
 	meanBubbles = {}
+end
+
+function love.keypressed(key)
+	if key == '1' then
+		koiFormation = koiFormVert
+	elseif key == '2' then
+		koiFormation = koiFormCircle
+	end
 end
