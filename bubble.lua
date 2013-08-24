@@ -87,4 +87,9 @@ end
 function Bubble:draw()
 	love.graphics.setColor(200, 200, 255)
 	love.graphics.circle('line', self.x, self.y, self.size)
+
+	local scale = 2 * self.size / sprBubble:getWidth()
+
+	love.graphics.setColor(255, 255, 255)
+	love.graphics.draw(sprBubble, self.x, self.y, 0, scale, scale, sprBubble:getWidth() / 2, sprBubble:getHeight() / 2)
 end
