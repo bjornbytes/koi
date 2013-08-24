@@ -8,6 +8,12 @@ require 'anal'
 koiFormVert = 1
 koiFormCircle = 2
 
+toUpdate = {
+	bubbles,
+	meanBubbles,
+	rainbowSexes
+}
+
 function love.load()
 	koi1 = Koi.create()
 	koi2 = Koi.create()
@@ -41,16 +47,10 @@ end
 function love.update(dt)
 	delta = dt
 
-	for _, bubble in pairs(bubbles) do
-		bubble:update()
-	end
-
-	for _, mbubble in pairs(meanBubbles) do
-		mbubble:update()
-	end
-
-	for _, rsex in pairs(rainbowSexes) do
-		rsex:update()
+	for _, table in pairs(toUpdate) do
+		for _, inst in pairs(table) do
+			inst:update()
+		end
 	end
 
 	koi1:update()
@@ -62,7 +62,7 @@ function love.update(dt)
 		bubbleTimer = 0
 	end
 
-	meanBubbleTimer = meanBubbleTimer + delta
+	meanBubbleTimer = meanBubbleTimer + deltae
 	if meanBubbleTimer > 1 then
 		local b = MeanBubble.create()
 		meanBubbleTimer = 0
