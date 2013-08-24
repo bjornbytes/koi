@@ -67,11 +67,11 @@ function love.update(dt)
 	-- 	bubbleTimer = 0
 	-- end
 
-	-- meanBubbleTimer = meanBubbleTimer + delta
-	-- if meanBubbleTimer > 1 then
-	-- 	local b = MeanBubble.create()
-	-- 	meanBubbleTimer = 0
-	-- end
+	meanBubbleTimer = meanBubbleTimer + delta
+	if meanBubbleTimer > 1 then
+		local b = MeanBubble.create()
+		meanBubbleTimer = 0
+	end
 
 	if koiFormation == koiFormCircle then
 		koiCircleAngle = koiCircleAngle + (2 * math.pi * delta)
@@ -82,7 +82,7 @@ function love.update(dt)
 end
 
 function love.draw()
-	love.graphics.setColor(80, 80, 200)
+	love.graphics.setColor(50, 50, 100)
 	love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 	local w2 = love.graphics.getWidth() / 2
 	love.graphics.setColor(255, 255, 255, 40)

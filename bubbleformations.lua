@@ -39,13 +39,13 @@ function FormationCreator:generate()
 	local formation = self.formations[math.random(1, self.formationsSize)]
 	local x = math.random(0, love.graphics.getWidth())
 
-	self.duration = 10 + math.random(10)
+	self.duration = 5 + math.random(5)
 	self.formation = formation:create(x, self.duration)
 end
 
 FormationCreator.line = {
-	width = 100,
-	bubbleRate = .1,
+	width = 10,
+	bubbleRate = .35,
 	create = function(self, x, duration)
 		self.x = x
 		self.bubbleTimer = 0
@@ -58,8 +58,10 @@ FormationCreator.line = {
 		self.bubbleTimer = self.bubbleTimer + delta
 		if self.bubbleTimer > self.bubbleRate then
 			--make a bubby
-			local bubble = Bubble:create()
-			bubble.x = math.random(self.x, self.x + self.width)
+			local bubble1, bubble2 = Bubble:create(), Bubble:create()
+			
+			bubble1.x = math.random(self.x, self.x + self.width)
+			bubble2.x = love.graphics.getWidth() / 2 + (love.graphics.getWidth() / 2 - bubble1.x)
 
 			self.bubbleTimer = 0
 		end
@@ -67,7 +69,7 @@ FormationCreator.line = {
 }
 
 FormationCreator.tile = {
-	width = 100,
+	width = 50,
 	bubbleRate = 10,
 	create = function(self, x, duration)
 		self.x = x
