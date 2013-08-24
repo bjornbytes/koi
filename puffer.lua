@@ -6,7 +6,8 @@ function Puffer.create()
 		y = 300,
 		angle = 0,
 		size = 20,
-		speed = 0
+		speed = 0,
+		lastBubble = 0
 	}
 
 	setmetatable(puffer, {__index = Puffer})
