@@ -4,6 +4,8 @@ function Koi.create()
 	local koi = {
 		x = 0,
 		y = 0,
+		bx = 0,
+		by = 0,
 		angle = 0,
 		speed = 0,
 		accel = 0,
@@ -38,7 +40,7 @@ function Koi:move()
 
 	if minidx then
 		self.angle = math.direction(self.x, self.y, bubbles[minidx].x, bubbles[minidx].y)
-		self.speed = 100
+		self.speed = 10000 / mindis
 
 		if mindis < 40 + 20 then 
 			bubbles[minidx]:pop()
@@ -53,7 +55,8 @@ function Koi:collide()
 
 	for _, wall in pairs(walls) do
 		if math.hcora(self.x, self.y, 40, wall.x, wall.y, wall.w, wall.h) then
-			if self.x < wall.x then -- We're to the left of it
+			love.gameover()
+			--[[if self.x < wall.x then -- We're to the left of it
 				if self.y < wall.y then -- We're on the upper left corner.
 
 				elseif self.y > wall.y + wall.h -- We're on the bottom left corner.
@@ -75,7 +78,7 @@ function Koi:collide()
 				else -- We're just on the boring lower edge.
 
 				end
-			end
+			end]]
 		end
 	end
 end
@@ -83,4 +86,5 @@ end
 function Koi:draw()
 	love.graphics.setColor(unpack(self.color))
 	love.graphics.circle('fill', self.x, self.y, 40)
+	love.graphics.circle('fill', self.bx, self.by, 40)
 end

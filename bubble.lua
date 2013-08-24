@@ -19,6 +19,7 @@ end
 
 function Bubble.activate()
 	bubbles[nextbubble].active = true
+	bubbles[nextbubble].hp = bubbles[nextbubble].maxHp
 	local ret = nextbubble
 	nextbubble = (nextbubble + 1)
 	if nextbubble > maxBubbles then nextbubble = 1 end
