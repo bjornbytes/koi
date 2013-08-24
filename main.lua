@@ -19,6 +19,7 @@ function love.load()
 	koi2.angle = math.pi
 
 	bubbleTimer = 0
+	meanBubbleTimer = 0
 end
 
 function love.update(dt)
@@ -26,6 +27,14 @@ function love.update(dt)
 
 	for _, bubble in pairs(bubbles) do
 		bubble:update()
+	end
+
+	for _, mbubble in pairs(meanBubbles) do
+		mbubble:update()
+	end
+
+	for _, rsex in pairs(rainbowSexes) do
+		rsex:update()
 	end
 
 	if math.hcoca(koi1.x, koi1.y, 40, koi2.x, koi2.y, 40) then
@@ -44,9 +53,15 @@ function love.update(dt)
 	end
 
 	bubbleTimer = bubbleTimer + delta
-	if bubbleTimer > .2 then
+	if bubbleTimer > .05 then
 		local b = Bubble.create()
 		bubbleTimer = 0
+	end
+
+	meanBubbleTimer = meanBubbleTimer + delta
+	if meanBubbleTimer > 1 then
+		local b = MeanBubble.create()
+		meanBubbleTimer = 0
 	end
 end
 
@@ -54,8 +69,16 @@ function love.draw()
 	koi1:draw()
 	koi2:draw()
 
+	for _, rsex in pairs(rainbowSexes) do
+		rsex:draw()
+	end
+
 	for _, bubble in pairs(bubbles) do
 		bubble:draw()
+	end
+
+	for _, mbubble in pairs(meanBubbles) do
+		mbubble:draw()
 	end
 
 	for _, wall in pairs(walls) do
@@ -84,4 +107,10 @@ function love.restart()
 	for _, bubble in pairs(bubbles) do
 		bubble:pop()
 	end
+
+	bubbleTimer = 0
+	meanBubbleTimer = 0
+
+	bubbles = {}
+	meanBubbles = {}
 end
