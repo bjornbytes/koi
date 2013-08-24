@@ -51,6 +51,10 @@ function Koi:update()
 	if math.distance(self.x, self.y, x, y) < 200 then
 		self.speed = math.max(self.speed - 600 * delta, 500)
 	end
+
+	if math.hcoca(self.x, self.y, 40, puffer.x, puffer.y, puffer.size) then
+		love.gameover()
+	end
 end
 
 function Koi:draw()

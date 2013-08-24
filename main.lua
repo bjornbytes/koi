@@ -29,7 +29,7 @@ function love.load()
 	puffer = Puffer.create()
 
 	bubbleTimer = 0
-	bubbleRate = 2
+	bubbleRate = 0.5
 
 	sprKoi = {}
 	sprKoi[1] = love.graphics.newImage('blackKoi.png')
@@ -96,6 +96,7 @@ function love.restart()
 	end
 
 	bubbleTimer = 0
+	bubbleRate = 0.5
 
 	bubbles = {}
 end

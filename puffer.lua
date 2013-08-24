@@ -36,9 +36,15 @@ function Puffer:update()
     	self.speed = math.max(self.speed - 5 * delta, 0)
     end
 
-    if delta - self.lastBubble > 5 then
+    self.lastBubble = self.lastBubble + delta
+    if self.lastBubble > 5 then
     	if(self.size > 40) then
-    		self.size = self.size - 1
+    		self.size = self.size - (1 * delta)
+    		self.speed = math.min(self.speed + (5 * delta), 100)
+    	end
+    else
+    	if self.speed > 0 then
+    		self.speed = math.max(self.speed - (5 * delta), 50)
     	end
     end
 end

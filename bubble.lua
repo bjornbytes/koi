@@ -3,10 +3,16 @@ Bubble = {}
 bubbles = {}
 
 function Bubble.create()
+	local x, y
+	repeat
+		x = math.random(love.graphics.getWidth())
+		y = math.random(love.graphics.getHeight())
+	until not math.hcoca(x, y, 25, puffer.x, puffer.y, puffer.size + 100)
+
 	local bubble = {
 		id = #bubbles + 1,
-		x = math.random(love.graphics.getWidth()),
-		y = math.random(love.graphics.getHeight()),
+		x = x,
+		y = y,
 		speed = 250 + math.random() * 150,
 		duration = 10,
 		start = delta,
@@ -37,7 +43,7 @@ function Bubble:update()
 	if math.hcoca(self.x, self.y, self.size, puffer.x, puffer.y, puffer.size) then
 		self:pop()
 		puffer.size = puffer.size + 1
-		puffer.lastBubble = delta
+		puffer.lastBubble = 0
 	end
 end
 
