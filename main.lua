@@ -25,7 +25,6 @@ function love.load()
 	koi2.angle = math.pi
 
 	bubbleTimer = 0
-	meanBubbleTimer = 0
 
 	koiFormation = koiFormVert
 	koiCircleAngle = 0
