@@ -55,6 +55,16 @@ function Koi:update()
 	if math.hcoca(self.x, self.y, 30, puffer.x, puffer.y, puffer.size) then
 		love.gameover()
 	end
+
+	if self.id == 1 then
+		while math.hcoca(self.x, self.y, 30, koi2.x, koi2.y, 30) do
+			local dir = math.direction(self.x, self.y, koi2.x, koi2.y) + math.pi
+			self.x = self.x + math.cos(dir) * 1
+			self.y = self.y + math.sin(dir) * 1
+			koi2.x = koi2.x + math.cos(dir + math.pi) * 1
+			koi2.y = koi2.y + math.sin(dir + math.pi) * 1
+		end
+	end
 end
 
 function Koi:draw()
