@@ -2,6 +2,7 @@ require 'util'
 require 'shaders'
 require 'koi'
 require 'puffer'
+require 'shark'
 require 'bubble'
 
 require 'anal'
@@ -9,7 +10,8 @@ require 'anal'
 toUpdate = {
 	bubbles,
 	meanBubbles,
-	rainbowSexes
+	rainbowSexes,
+	sharks
 }
 
 function love.load()
@@ -48,9 +50,13 @@ function love.load()
 	sandTile = love.graphics.newImage('sandTile.png')
 	water = love.graphics.newImage('water.png')
 	waterLight = love.graphics.newImage('waterLight.png')
+	sprBubble = love.graphics.newImage('bubble.png')
 
 	bubbleBar = 0
 	bubbleBarDisplay = 0
+
+	sharkTimer = 0
+	nextShark = 10
 
 	sucking = 0
 	blowing = 0
@@ -99,6 +105,13 @@ function love.update(dt)
 		blowing = math.max(blowing - delta, 0)
 	end
 
+	sharkTimer = sharkTimer + delta
+	if sharkTimer > nextShark then
+		Shark.create()
+		sharkTimer = 0
+		nextShark = 20 - 10 + math.random(20)
+	end
+
 	bubbleBarDisplay = math.lerp(bubbleBarDisplay, bubbleBar, .05)
 end
 
@@ -131,6 +144,13 @@ function love.draw()
 
 	-- love.graphics.setColor(255, 255, 255, 192)
 	-- love.graphics.draw(water, 0, 0)
+	
+	for _, shark in pairs(sharks) do
+		shark:draw()
+	end
+
+	love.graphics.setColor(255, 255, 255, 160)
+	love.graphics.draw(water, 0, 0)
 end
 
 function love.gameover()

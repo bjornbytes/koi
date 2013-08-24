@@ -97,8 +97,9 @@ function Puffer:update()
 	self.displaySize = math.lerp(self.displaySize, self.size, .05)
 end
 
-function Puffer:draw()	
-	love.graphics.setColor(255, 255, 0)
+function Puffer:draw()
+	love.graphics.setColor(255, 255, 255)
+	
 	local scale = 3.5 * self.displaySize / self.sprite:getWidth()
 	local scaleSign = -1
 	if self.angle % (2 * math.pi) > 1.5 * math.pi or self.angle % (2 * math.pi) < .5 * math.pi then scaleSign = 1 end
