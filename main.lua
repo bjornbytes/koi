@@ -43,6 +43,10 @@ function love.load()
 	animKoi[2] = newAnimation(sprKoi[2], 128, 128, 0.1, 0)
 
 	bubbleBar = 0
+
+	sucking = 0
+	blowing = 0
+	kinky = true
 end
 
 function love.update(dt)
@@ -72,10 +76,18 @@ function love.update(dt)
 	bubbleTimer = bubbleTimer + delta
 	bubbleSpeedup = bubbleSpeedup + delta
 
-	if bubbleSpeedup > 10 then
-		bubbleRate = bubbleRate - .05
+	if bubbleSpeedup > 5 then
+		bubbleRate = bubbleRate - .1
 		bubbleSpeedup = 0
 		maxBubbles = maxBubbles + 1
+	end
+
+	if sucking > 0 then
+		sucking = math.max(sucking - delta, 0)
+	end
+
+	if blowing > 0 then
+		blowing = math.max(blowing - delta, 0)
 	end
 end
 
@@ -84,8 +96,9 @@ function love.draw()
 	love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
 	love.graphics.setColor(0, 200, 200, 128)
-	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBar / 100), 40)
+	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBar / 20), 40)
 	love.graphics.setColor(0, 200, 200, 255)
+	love.graphics.line(love.graphics.getWidth() / 2, 10, love.graphics.getWidth() / 2, 50)
 	love.graphics.rectangle('line', 60, 10, love.graphics.getWidth() - 120, 40)
 
 	koi1:draw()
@@ -116,4 +129,19 @@ function love.restart()
 	table.print(bubbles)
 	bubbleTimer = 0
 	bubbleRate = 2
+	bubbleBar = 0
+end
+
+function love.keypressed(key)
+	if key == 'z' then
+		if bubbleBar >= 10 then
+			bubbleBar = bubbleBar - 10
+			sucking = .5
+		end
+	elseif key == 'x' then
+		if bubbleBar >= 20 then
+			bubbleBar = bubbleBar - 20
+			blowing = .5
+		end
+	end
 end

@@ -48,6 +48,49 @@ function Puffer:update()
     		self.speed = math.max(self.speed - (5 * delta), 75)
     	end
     end
+
+    if self.x < self.size or self.x > love.graphics.getWidth() - self.size then
+    	local xangle = math.cos(self.angle)
+    	local yangle = math.sin(self.angle)
+    	xangle = xangle * -1
+
+    	self.angle = math.direction(0, 0, xangle, yangle)
+
+    	if self.x < self.size then self.x = self.size + 1
+		elseif self.x > love.graphics.getWidth() - self.size then self.x = love.graphics.getWidth() - (self.size + 1) end
+	end
+
+	if self.y < self.size or self.y > love.graphics.getHeight() - self.size then
+		local xangle = math.cos(self.angle)
+    	local yangle = math.sin(self.angle)
+    	yangle = yangle * -1
+
+    	self.angle = math.direction(0, 0, xangle, yangle)
+    	if self.y < self.size then self.y = self.size + 1
+		elseif self.y > love.graphics.getHeight() - self.size then self.y = love.graphics.getHeight() - (self.size + 1) end
+	end
+
+	if sucking > 0 then
+		local closest = koi1
+		if math.distance(self.x, self.y, koi2.x, koi2.y) < math.distance(self.x, self.y, koi1.x, koi1.y) then
+			closest = koi2
+		end
+
+		local dir = math.direction(self.x, self.y, closest.x, closest.y)
+		local dis = math.distance(self.x, self.y, closest.x, closest.y)
+		self.speed = (100000 / dis)
+		self.angle = dir
+	elseif blowing > 0 then
+		local closest = koi1
+		if math.distance(self.x, self.y, koi2.x, koi2.y) < math.distance(self.x, self.y, koi1.x, koi1.y) then
+			closest = koi2
+		end
+
+		local dir = math.direction(self.x, self.y, closest.x, closest.y) + math.pi
+		local dis = math.distance(self.x, self.y, closest.x, closest.y)
+		self.speed = (100000 / dis)
+		self.angle = dir
+	end
 end
 
 function Puffer:draw()
