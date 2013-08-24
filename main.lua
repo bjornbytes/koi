@@ -3,6 +3,8 @@ require 'koi'
 require 'bubble'
 require 'wall'
 
+require 'anal'
+
 koiFormVert = 1
 koiFormCircle = 2
 
@@ -26,6 +28,14 @@ function love.load()
 
 	koiFormation = koiFormVert
 	koiCircleAngle = 0
+
+	sprKoi = {}
+	sprKoi[1] = love.graphics.newImage('blackKoi.png')
+	sprKoi[2] = love.graphics.newImage('blackKoi.png')
+
+	animKoi = {}
+	animKoi[1] = newAnimation(sprKoi[1], 128, 128, 0.1, 0)
+	animKoi[2] = newAnimation(sprKoi[2], 128, 128, 0.1, 0)
 end
 
 function love.update(dt)
@@ -61,11 +71,16 @@ function love.update(dt)
 	if koiFormation == koiFormCircle then
 		koiCircleAngle = koiCircleAngle + (2 * math.pi * delta)
 	end
+
+	animKoi[1].update(animKoi[1], dt)
+	animKoi[2].update(animKoi[2], dt)
 end
 
 function love.draw()
+	love.graphics.setColor(80, 80, 200)
+	love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 	local w2 = love.graphics.getWidth() / 2
-	love.graphics.setColor(255, 255, 255, 20)
+	love.graphics.setColor(255, 255, 255, 40)
 	love.graphics.line(w2, 0, w2, love.graphics.getHeight())
 
 	if koiFormation == koiFormVert then
