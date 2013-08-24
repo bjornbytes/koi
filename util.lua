@@ -40,3 +40,26 @@ function HSV(h, s, v)
     else              r,g,b = c,0,x
     end return (r+m)*255,(g+m)*255,(b+m)*255
 end
+
+function table.print(t, n)
+  n = n or 0
+  if t == nil then print('nil') end
+  if type(t) ~= 'table' then io.write(tostring(t)) io.write('\n')
+  else
+    for k, v in pairs(t) do
+      io.write(string.rep('\t', n))
+      io.write(k)
+      if type(v) == 'table' then io.write('\n')
+      else io.write('\t') end
+      table.print(v, n + 1)
+    end
+  end
+end
+
+function table.count(t)
+  local ct = 0
+  for k, v in pairs(t) do
+    ct = ct + 1
+  end
+  return ct
+end
