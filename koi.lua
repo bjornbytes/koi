@@ -60,4 +60,9 @@ end
 function Koi:draw()
 	love.graphics.reset()
 	animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi * 1.5, .8, .8, 64, 64)
+
+	if love.keyboard.isDown(' ') then
+		love.graphics.setColor(0, 255, 0)
+		love.graphics.circle('line', self.x, self.y, 30)
+	end
 end

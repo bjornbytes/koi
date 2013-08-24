@@ -42,6 +42,10 @@ function love.load()
 	animKoi[1] = newAnimation(sprKoi[1], 128, 128, 0.1, 0)
 	animKoi[2] = newAnimation(sprKoi[2], 128, 128, 0.1, 0)
 
+	sandTile = love.graphics.newImage('sandTile.png')
+	water = love.graphics.newImage('water.png')
+	waterLight = love.graphics.newImage('waterLight.png')
+
 	bubbleBar = 0
 
 	sucking = 0
@@ -92,8 +96,9 @@ function love.update(dt)
 end
 
 function love.draw()
-	love.graphics.setColor(50, 50, 100)
-	love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+	love.graphics.reset()
+	love.graphics.draw(sandTile, 0, 0)
+	love.graphics.draw(water, 0, 0)
 
 	love.graphics.setColor(0, 200, 200, 128)
 	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBar / 20), 40)
@@ -108,6 +113,9 @@ function love.draw()
 	for _, bubble in pairs(bubbles) do
 		bubble:draw()
 	end
+
+	love.graphics.setColor(255, 255, 255, 192)
+	love.graphics.draw(water, 0, 0)
 end
 
 function love.gameover()

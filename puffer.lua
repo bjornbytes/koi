@@ -6,8 +6,10 @@ function Puffer.create()
 		y = 300,
 		angle = 0,
 		size = 40,
+		displaySize = 40,
 		speed = 0,
-		lastBubble = 0
+		lastBubble = 0,
+		sprite = love.graphics.newImage('pufferFish.png')
 	}
 
 	setmetatable(puffer, {__index = Puffer})
@@ -91,9 +93,19 @@ function Puffer:update()
 		self.speed = (100000 / dis)
 		self.angle = dir
 	end
+
+	self.displaySize = math.lerp(self.displaySize, self.size, .05)
 end
 
 function Puffer:draw()
 	love.graphics.setColor(255, 255, 0)
-	love.graphics.circle('fill', self.x, self.y, self.size)
+	local scale = 3.5 * self.displaySize / self.sprite:getWidth()
+	local scaleSign = -1
+	if self.angle % (2 * math.pi) > 1.5 * math.pi or self.angle % (2 * math.pi) < .5 * math.pi then scaleSign = 1 end
+	love.graphics.draw(self.sprite, self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
+
+	if love.keyboard.isDown(' ') then
+		love.graphics.setColor(255, 0, 0)
+		love.graphics.circle('line', self.x, self.y, self.size)
+	end
 end
