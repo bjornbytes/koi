@@ -12,6 +12,13 @@ function love.load()
 
 	koi1.x, koi1.y = 64, 64
 	koi2.x, koi2.y = love.graphics.getWidth() - 64, love.graphics.getHeight() - 64
+
+	koi1.id, koi2.id = 1, 2
+
+	koi1.angle = 0
+	koi2.angle = math.pi
+
+	bubbleTimer = 0
 end
 
 function love.update(dt)
@@ -22,11 +29,25 @@ function love.update(dt)
 	end
 
 	if math.hcoca(koi1.x, koi1.y, 40, koi2.x, koi2.y, 40) then
-		love.win('<3')
+		--love.win('<3')
 	end
 
 	koi1:update()
 	koi2:update()
+
+	if love.mouse.isDown('l') then
+		koi1.sexy = true
+		koi2.sexy = true
+	else
+		koi1.sexy = false
+		koi2.sexy = false
+	end
+
+	bubbleTimer = bubbleTimer + delta
+	if bubbleTimer > .2 then
+		local b = Bubble.create()
+		bubbleTimer = 0
+	end
 end
 
 function love.draw()
@@ -39,17 +60,6 @@ function love.draw()
 
 	for _, wall in pairs(walls) do
 		wall:draw()
-	end
-end
-
-function love.mousepressed(x, y, button)
-	if button == 'l' then
-		local b = Bubble.activate()
-		if b then
-			b.x = x
-			b.y = y
-		end
-		print(nextbubble)
 	end
 end
 

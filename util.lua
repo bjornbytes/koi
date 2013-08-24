@@ -2,6 +2,9 @@ function math.lerp(x, y, z)
 	return x + (y - x) * z
 end
 
+function math.anglerp(d1, d2, z) return d1 + (math.anglediff(d1, d2) * z) end
+function math.anglediff(d1, d2) return math.rad((((math.deg(d2) - math.deg(d1) % 360) + 540) % 360) - 180) end
+
 function math.distance(x1, y1, x2, y2)
 	return ((x2 - x1) ^ 2 + (y2 - y1) ^ 2) ^ .5
 end
