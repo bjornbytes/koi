@@ -1,6 +1,7 @@
 require 'util'
 require 'koi'
 require 'bubble'
+require 'bubbleformations'
 require 'wall'
 
 function love.load()
@@ -20,6 +21,8 @@ function love.load()
 
 	bubbleTimer = 0
 	meanBubbleTimer = 0
+
+	formation = FormationCreator.create()
 end
 
 function love.update(dt)
@@ -43,6 +46,8 @@ function love.update(dt)
 
 	koi1:update()
 	koi2:update()
+
+	formation:update()
 
 	if love.mouse.isDown('l') then
 		koi1.sexy = true
