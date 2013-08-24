@@ -1,13 +1,10 @@
 require 'util'
 require 'koi'
+require 'puffer'
 require 'bubble'
 require 'bubbleformations'
-require 'wall'
 
 require 'anal'
-
-koiFormVert = 1
-koiFormCircle = 2
 
 toUpdate = {
 	bubbles,
@@ -30,11 +27,10 @@ function love.load()
 	koi1.angle = 0
 	koi2.angle = math.pi
 
+	puffer = Puffer.create()
+
 	bubbleTimer = 0
 	meanBubbleTimer = 0
-
-	koiFormation = koiFormVert
-	koiCircleAngle = 0
 
 	sprKoi = {}
 	sprKoi[1] = love.graphics.newImage('blackKoi.png')
@@ -56,6 +52,7 @@ function love.update(dt)
 
 	koi1:update()
 	koi2:update()
+	puffer:update()
 
 	for _, fc in pairs(formationCreators) do
 		fc:update()
@@ -64,10 +61,6 @@ function love.update(dt)
 	if meanBubbleTimer > 1 then
 		local b = MeanBubble.create()
 		meanBubbleTimer = 0
-	end
-
-	if koiFormation == koiFormCircle then
-		koiCircleAngle = koiCircleAngle + (2 * math.pi * delta)
 	end
 
 	animKoi[1].update(animKoi[1], dt)
@@ -92,6 +85,7 @@ function love.draw()
 
 	koi1:draw()
 	koi2:draw()
+	puffer:draw()
 
 	for _, rsex in pairs(rainbowSexes) do
 		rsex:draw()
@@ -103,10 +97,6 @@ function love.draw()
 
 	for _, mbubble in pairs(meanBubbles) do
 		mbubble:draw()
-	end
-
-	for _, wall in pairs(walls) do
-		wall:draw()
 	end
 end
 
@@ -132,12 +122,4 @@ function love.restart()
 
 	bubbles = {}
 	meanBubbles = {}
-end
-
-function love.keypressed(key)
-	if key == '1' then
-		koiFormation = koiFormVert
-	elseif key == '2' then
-		koiFormation = koiFormCircle
-	end
 end

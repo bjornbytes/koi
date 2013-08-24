@@ -20,35 +20,40 @@ function Koi.create()
 end
 
 function Koi:update()
-	if koiFormation == koiFormVert then
-		local dis = math.abs(love.mouse.getX() - love.graphics.getWidth() / 2)
-		if self.id == 1 then
-			self.targetX = love.graphics.getWidth() / 2 - dis
-			self.targetY = love.mouse.getY()
+	self.x = self.x + math.cos(self.angle) * self.speed * delta
+	self.y = self.y + math.sin(self.angle) * self.speed * delta
+
+	local x, y = love.mouse.getPosition()
+
+	self.angle = math.anglerp(self.angle, math.direction(self.x, self.y, x, y), .085)
+	self.speed = math.min(self.speed + 100 * delta, 500)
+
+	self.angleSwitch = self.angleSwitch + delta
+	if self.angleSwitch > .5 then
+		local r = math.random()
+		if self.id == 1 and r < .5 then
+			self.angle = self.angle + 3 * delta
 		else
-			self.targetX = love.graphics.getWidth() / 2 + dis
-			self.targetY = love.mouse.getY()
+			self.angle = self.angle - 3 * delta
 		end
-		self.targetAngle = 0
-	elseif koiFormation == koiFormCircle then
-		local dis = math.abs(love.mouse.getX() - love.graphics.getWidth() / 2)
-		if self.id == 1 then
-			self.targetX = love.graphics.getWidth() / 2 + math.cos(koiCircleAngle) * dis
-			self.targetY = love.mouse.getY() + math.sin(koiCircleAngle) * dis
-			self.targetAngle = koiCircleAngle
+
+		if self.id == 2 and r < .5 then
+			self.angle = self.angle - 3 * delta
 		else
-			self.targetX = love.graphics.getWidth() / 2 + math.cos(koiCircleAngle + math.pi) * dis
-			self.targetY = love.mouse.getY() + math.sin(koiCircleAngle + math.pi) * dis
-			self.targetAngle = koiCircleAngle + math.pi
+			self.angle = self.angle + 3 * delta
+		end
+
+		if self.angleSwitch > 1 then
+			self.angleSwitch = 0
 		end
 	end
 
-	self.x = math.lerp(self.x, self.targetX, .075)
-	self.y = math.lerp(self.y, self.targetY, .075)
-	self.angle = math.anglerp(self.angle, self.targetAngle, .075)
+	if math.distance(self.x, self.y, x, y) < 200 then
+		self.speed = math.max(self.speed - 600 * delta, 500)
+	end
 end
 
 function Koi:draw()
 	love.graphics.reset()
-	animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle, .8, .8, 64, 64)
+	animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi *1.5, .8, .8, 64, 64)
 end
