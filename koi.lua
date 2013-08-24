@@ -25,31 +25,31 @@ function Koi:update()
 
 	local x, y = love.mouse.getPosition()
 
-	self.angle = math.anglerp(self.angle, math.direction(self.x, self.y, x, y), .085)
-	self.speed = math.min(self.speed + 100 * delta, 500)
-
-	self.angleSwitch = self.angleSwitch + delta
-	if self.angleSwitch > .5 then
-		local r = math.random()
-		if self.id == 1 and r < .5 then
-			self.angle = self.angle + 3 * delta
-		else
-			self.angle = self.angle - 3 * delta
-		end
-
-		if self.id == 2 and r < .5 then
-			self.angle = self.angle - 3 * delta
-		else
-			self.angle = self.angle + 3 * delta
-		end
-
-		if self.angleSwitch > 1 then
-			self.angleSwitch = 0
-		end
+	if math.distance(self.x, self.y, x, y) > 20 then
+		local diff = math.anglediff(self.angle, math.direction(self.x, self.y, x, y))
+		self.angle = self.angle + diff * delta * (math.distance(self.x, self.y, x, y) * .1)
 	end
 
-	if math.distance(self.x, self.y, x, y) < 200 then
-		self.speed = math.max(self.speed - 600 * delta, 500)
+	if love.mouse.isDown('l') and math.distance(self.x, self.y, x, y) > 60 then
+		self.speed = math.min(self.speed + 500 * delta, 500)
+		self.angleSwitch = self.angleSwitch + delta
+		if self.angleSwitch < 1 then
+			if self.id == 1 then
+				self.angle = self.angle + 2 * delta
+			else
+				self.angle = self.angle - 2 * delta
+			end
+		else
+			if self.id == 1 then
+				self.angle = self.angle - 2 * delta
+			else
+				self.angle = self.angle + 2 * delta
+			end
+		end
+
+		if self.angleSwitch > 2 then self.angleSwitch = 0 end
+	else
+		self.speed = math.max(self.speed - 500 * delta, 50)
 	end
 
 	if math.hcoca(self.x, self.y, 40, puffer.x, puffer.y, puffer.size) then
@@ -59,5 +59,5 @@ end
 
 function Koi:draw()
 	love.graphics.reset()
-	animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi *1.5, .8, .8, 64, 64)
+	animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi * 1.5, .8, .8, 64, 64)
 end
