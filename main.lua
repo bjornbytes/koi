@@ -1,7 +1,6 @@
 require 'util'
 require 'koi'
 require 'bubble'
-require 'bubbleformations'
 require 'wall'
 
 require 'anal'
@@ -56,13 +55,9 @@ function love.update(dt)
 	koi1:update()
 	koi2:update()
 
-	for _, fc in pairs(formationCreators) do
-		fc:update()
-	end
-
-	if meanBubbleTimer > 1 then
-		local b = MeanBubble.create()
-		meanBubbleTimer = 0
+	if bubbleTimer > 1.5 then
+		Bubble.create()
+		bubbleTimer = 0
 	end
 
 	if koiFormation == koiFormCircle then
@@ -71,6 +66,8 @@ function love.update(dt)
 
 	animKoi[1].update(animKoi[1], dt)
 	animKoi[2].update(animKoi[2], dt)
+
+	bubbleTimer = bubbleTimer + delta
 end
 
 function love.draw()
@@ -92,16 +89,8 @@ function love.draw()
 	koi1:draw()
 	koi2:draw()
 
-	for _, rsex in pairs(rainbowSexes) do
-		rsex:draw()
-	end
-
 	for _, bubble in pairs(bubbles) do
 		bubble:draw()
-	end
-
-	for _, mbubble in pairs(meanBubbles) do
-		mbubble:draw()
 	end
 
 	for _, wall in pairs(walls) do
@@ -127,10 +116,8 @@ function love.restart()
 	end
 
 	bubbleTimer = 0
-	meanBubbleTimer = 0
 
 	bubbles = {}
-	meanBubbles = {}
 end
 
 function love.keypressed(key)
