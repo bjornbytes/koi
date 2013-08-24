@@ -38,6 +38,8 @@ function love.load()
 	animKoi = {}
 	animKoi[1] = newAnimation(sprKoi[1], 128, 128, 0.1, 0)
 	animKoi[2] = newAnimation(sprKoi[2], 128, 128, 0.1, 0)
+
+	bubbleBar = 0
 end
 
 function love.update(dt)
@@ -68,6 +70,11 @@ end
 function love.draw()
 	love.graphics.setColor(50, 50, 100)
 	love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+
+	love.graphics.setColor(0, 200, 200, 128)
+	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBar / 100), 40)
+	love.graphics.setColor(0, 200, 200, 255)
+	love.graphics.rectangle('line', 60, 10, love.graphics.getWidth() - 120, 40)
 
 	koi1:draw()
 	koi2:draw()

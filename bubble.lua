@@ -32,6 +32,8 @@ function Bubble:update()
 
 	if math.hcoca(self.x, self.y, self.size, koi1.x, koi1.y, 30) or math.hcoca(self.x, self.y, 20, koi2.x, koi2.y, 30) then
 		self:pop()
+		bubbleBar = math.min(bubbleBar + 1, 100)
+		print(bubbleBar .. ' sucks')
 	end
 
 	if math.hcoca(self.x, self.y, self.size, puffer.x, puffer.y, puffer.size) then
