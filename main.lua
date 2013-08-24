@@ -47,6 +47,7 @@ function love.load()
 	waterLight = love.graphics.newImage('waterLight.png')
 
 	bubbleBar = 0
+	bubbleBarDisplay = 0
 
 	sucking = 0
 	blowing = 0
@@ -93,6 +94,8 @@ function love.update(dt)
 	if blowing > 0 then
 		blowing = math.max(blowing - delta, 0)
 	end
+
+	bubbleBarDisplay = math.lerp(bubbleBarDisplay, bubbleBar, .05)
 end
 
 function love.draw()
@@ -100,9 +103,9 @@ function love.draw()
 	love.graphics.draw(sandTile, 0, 0)
 	love.graphics.draw(water, 0, 0)
 
-	love.graphics.setColor(0, 200, 200, 128)
-	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBar / 20), 40)
-	love.graphics.setColor(0, 200, 200, 255)
+	love.graphics.setColor(0, 0, 200, 128)
+	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBarDisplay / 20), 40)
+	love.graphics.setColor(0, 0, 200, 255)
 	love.graphics.line(love.graphics.getWidth() / 2, 10, love.graphics.getWidth() / 2, 50)
 	love.graphics.rectangle('line', 60, 10, love.graphics.getWidth() - 120, 40)
 
@@ -138,6 +141,8 @@ function love.restart()
 	bubbleTimer = 0
 	bubbleRate = 2
 	bubbleBar = 0
+
+	puffer.size = 40
 end
 
 function love.keypressed(key)
