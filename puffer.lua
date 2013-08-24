@@ -5,7 +5,7 @@ function Puffer.create()
 		x = 400,
 		y = 300,
 		angle = 0,
-		size = 20,
+		size = 40,
 		speed = 0,
 		lastBubble = 0
 	}
@@ -30,8 +30,8 @@ function Puffer:update()
     end
 
     if minidx then
-    	self.speed = math.min(self.speed + 5 * delta, 100)
-    	self.angle = math.anglerp(self.angle, math.direction(self.x, self.y, bubbles[minidx].x, bubbles[minidx].y), .05)
+    	self.speed = math.min(self.speed + 5 * delta, 50)
+    	self.angle = math.anglerp(self.angle, math.direction(self.x, self.y, bubbles[minidx].x, bubbles[minidx].y), .025)
     else
     	self.speed = math.max(self.speed - 5 * delta, 0)
     end
