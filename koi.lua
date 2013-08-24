@@ -52,7 +52,7 @@ function Koi:update()
 		self.speed = math.max(self.speed - 500 * delta, 50)
 	end
 
-	if math.hcoca(self.x, self.y, 40, puffer.x, puffer.y, puffer.size) then
+	if math.hcoca(self.x, self.y, 30, puffer.x, puffer.y, puffer.size) then
 		love.gameover()
 	end
 end

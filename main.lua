@@ -29,7 +29,10 @@ function love.load()
 	puffer = Puffer.create()
 
 	bubbleTimer = 0
-	bubbleRate = 0.5
+	bubbleRate = 1.5
+	nextBubble = .25
+	maxBubbles = 2
+	bubbleSpeedup = 0
 
 	sprKoi = {}
 	sprKoi[1] = love.graphics.newImage('blackKoi.png')
@@ -53,16 +56,25 @@ function love.update(dt)
 	koi2:update()
 	puffer:update()
 
-	if bubbleTimer > bubbleRate then
-		Bubble.create()
+	if bubbleTimer > nextBubble then
+		if table.count(bubbles) < maxBubbles then
+			Bubble.create()
+		end
 		bubbleTimer = 0
-		bubbleRate = math.max(bubbleRate - .02, .1)
+		nextBubble = math.max(bubbleRate - .5 + math.random() * 1, 0)
 	end
 
 	animKoi[1].update(animKoi[1], dt)
 	animKoi[2].update(animKoi[2], dt)
 
 	bubbleTimer = bubbleTimer + delta
+	bubbleSpeedup = bubbleSpeedup + delta
+
+	if bubbleSpeedup > 10 then
+		bubbleRate = bubbleRate - .05
+		bubbleSpeedup = 0
+		maxBubbles = maxBubbles + 1
+	end
 end
 
 function love.draw()
@@ -94,9 +106,7 @@ function love.restart()
 	for _, bubble in pairs(bubbles) do
 		bubble:pop()
 	end
-
+	table.print(bubbles)
 	bubbleTimer = 0
-	bubbleRate = 0.5
-
-	bubbles = {}
+	bubbleRate = 2
 end
