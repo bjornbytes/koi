@@ -29,6 +29,7 @@ function love.load()
 	puffer = Puffer.create()
 
 	bubbleTimer = 0
+	bubbleRate = 2
 
 	sprKoi = {}
 	sprKoi[1] = love.graphics.newImage('blackKoi.png')
@@ -52,9 +53,10 @@ function love.update(dt)
 	koi2:update()
 	puffer:update()
 
-	if bubbleTimer > 1.5 then
+	if bubbleTimer > bubbleRate then
 		Bubble.create()
 		bubbleTimer = 0
+		bubbleRate = math.max(bubbleRate - .02, .1)
 	end
 
 	animKoi[1].update(animKoi[1], dt)
@@ -66,18 +68,6 @@ end
 function love.draw()
 	love.graphics.setColor(50, 50, 100)
 	love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
-	local w2 = love.graphics.getWidth() / 2
-	love.graphics.setColor(255, 255, 255, 40)
-	love.graphics.line(w2, 0, w2, love.graphics.getHeight())
-
-	if koiFormation == koiFormVert then
-		local dis = math.abs(love.mouse.getX() - w2)
-		love.graphics.line(w2 - dis, 0, w2 - dis, love.graphics.getHeight())
-		love.graphics.line(w2 + dis, 0, w2 + dis, love.graphics.getHeight())
-	elseif koiFormation == koiFormCircle then
-		local dis = math.abs(love.mouse.getX() - w2)
-		love.graphics.circle('line', w2, love.mouse.getY(), dis / 2)
-	end
 
 	koi1:draw()
 	koi2:draw()

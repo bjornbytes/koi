@@ -30,8 +30,13 @@ function Bubble:update()
 		self.tick = 0
 	end
 
-	if math.hcoca(self.x, self.y, 20, koi1.x, koi1.y, 30) or math.hcoca(self.x, self.y, 20, koi2.x, koi2.y, 30) then
+	if math.hcoca(self.x, self.y, self.size, koi1.x, koi1.y, 30) or math.hcoca(self.x, self.y, 20, koi2.x, koi2.y, 30) then
 		self:pop()
+	end
+
+	if math.hcoca(self.x, self.y, self.size, puffer.x, puffer.y, puffer.size) then
+		self:pop()
+		puffer.size = puffer.size + 1
 	end
 end
 
