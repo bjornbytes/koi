@@ -17,6 +17,7 @@ end
 
 function Koi:update()
 	self:move()
+	self:collide()
 end
 
 function Koi:move()
@@ -44,6 +45,38 @@ function Koi:move()
 		end
 	else
 		self.speed = math.lerp(self.speed, 0, .015)
+	end
+end
+
+function Koi:collide()
+	-- collide yo, reposition some bitches and do it again
+
+	for _, wall in pairs(walls) do
+		if math.hcora(self.x, self.y, 40, wall.x, wall.y, wall.w, wall.h) then
+			if self.x < wall.x then -- We're to the left of it
+				if self.y < wall.y then -- We're on the upper left corner.
+
+				elseif self.y > wall.y + wall.h -- We're on the bottom left corner.
+
+				else -- We're just on the boring left edge
+
+				end
+			elseif self.x > wall.x + wall.w -- We're to the right of it.
+				if self.y < wall.y then -- We're on the upper right corner.
+
+				elseif self.y > wall.y + wall.h -- We're on the lower right corner.
+
+				else -- We're just on the boring right edge.
+
+				end
+			else
+				if self.y < wall.y then -- We're just on the boring upper edge.
+
+				else -- We're just on the boring lower edge.
+
+				end
+			end
+		end
 	end
 end
 
