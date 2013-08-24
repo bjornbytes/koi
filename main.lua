@@ -25,7 +25,6 @@ function love.load()
 	bubbleTimer = 0
 	meanBubbleTimer = 0
 
-	formation = FormationCreator.create()
 	koiFormation = koiFormVert
 	koiCircleAngle = 0
 end
@@ -48,19 +47,21 @@ function love.update(dt)
 	koi1:update()
 	koi2:update()
 
-	formation:update()
-
-	bubbleTimer = bubbleTimer + delta
-	if bubbleTimer > .05 then
-		local b = Bubble.create()
-		bubbleTimer = 0
+	for _, fc in pairs(formationCreators) do
+		fc:update()
 	end
 
-	meanBubbleTimer = meanBubbleTimer + delta
-	if meanBubbleTimer > 1 then
-		local b = MeanBubble.create()
-		meanBubbleTimer = 0
-	end
+	-- bubbleTimer = bubbleTimer + delta
+	-- if bubbleTimer > .05 then
+	-- 	local b = Bubble.create()
+	-- 	bubbleTimer = 0
+	-- end
+
+	-- meanBubbleTimer = meanBubbleTimer + delta
+	-- if meanBubbleTimer > 1 then
+	-- 	local b = MeanBubble.create()
+	-- 	meanBubbleTimer = 0
+	-- end
 
 	if koiFormation == koiFormCircle then
 		koiCircleAngle = koiCircleAngle + (2 * math.pi * delta)
