@@ -97,7 +97,7 @@ function Puffer:update()
 	self.displaySize = math.lerp(self.displaySize, self.size, .05)
 end
 
-function Puffer:draw()
+function Puffer:draw()	
 	love.graphics.setColor(255, 255, 0)
 	local scale = 3.5 * self.displaySize / self.sprite:getWidth()
 	local scaleSign = -1
