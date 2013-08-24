@@ -1,6 +1,7 @@
 require 'util'
 require 'koi'
 require 'bubble'
+require 'bubbleformations'
 require 'wall'
 
 require 'anal'
@@ -56,13 +57,10 @@ function love.update(dt)
 	koi1:update()
 	koi2:update()
 
-	bubbleTimer = bubbleTimer + delta
-	if bubbleTimer > .05 then
-		local b = Bubble.create()
-		bubbleTimer = 0
+	for _, fc in pairs(formationCreators) do
+		fc:update()
 	end
 
-	meanBubbleTimer = meanBubbleTimer + deltae
 	if meanBubbleTimer > 1 then
 		local b = MeanBubble.create()
 		meanBubbleTimer = 0
@@ -77,7 +75,7 @@ function love.update(dt)
 end
 
 function love.draw()
-	love.graphics.setColor(80, 80, 200)
+	love.graphics.setColor(50, 50, 100)
 	love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 	local w2 = love.graphics.getWidth() / 2
 	love.graphics.setColor(255, 255, 255, 40)
