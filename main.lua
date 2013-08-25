@@ -40,7 +40,7 @@ function love.load()
 
 	sprKoi = {}
 	sprKoi[1] = love.graphics.newImage('img/blackKoi.png')
-	sprKoi[2] = love.graphics.newImage('img/blackKoi.png')
+	sprKoi[2] = love.graphics.newImage('img/whiteKoi.png')
 
 	animKoi = {}
 	animKoi[1] = newAnimation(sprKoi[1], 128, 128, 0.1, 0)
