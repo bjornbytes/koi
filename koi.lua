@@ -56,7 +56,7 @@ function Koi:update()
 		if tangoing == 0 then
 			love.gameover()
 		else
-			
+			puffer:hurt()
 		end
 	end
 

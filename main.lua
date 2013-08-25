@@ -35,10 +35,8 @@ function love.load()
 	puffer = Puffer.create()
 
 	bubbleTimer = 0
-	bubbleRate = 1.5
+	bubbleRate = 1.25
 	nextBubble = .25
-	maxBubbles = 2
-	bubbleSpeedup = 0
 
 	sprKoi = {}
 	sprKoi[1] = love.graphics.newImage('img/blackKoi.png')
@@ -65,6 +63,7 @@ function love.load()
 	end
 
 	bubbleBar = 0
+	bubbleBarMax = 20
 	bubbleBarDisplay = 0
 
 	sharkTimer = 0
@@ -92,11 +91,10 @@ function love.update(dt)
 	puffer:update()
 
 	if bubbleTimer > nextBubble then
-		if table.count(bubbles) < maxBubbles then
-			Bubble.create()
-		end
+		Bubble.create()
+
 		bubbleTimer = 0
-		nextBubble = math.max(bubbleRate - .5 + math.random() * 1, 0)
+		nextBubble = math.max(bubbleRate - .5 + math.random() * .5, 0)
 	end
 
 	animKoi[1].update(animKoi[1], dt)
@@ -104,13 +102,6 @@ function love.update(dt)
 	animFins:update(dt)
 
 	bubbleTimer = bubbleTimer + delta
-	bubbleSpeedup = bubbleSpeedup + delta
-
-	if bubbleSpeedup > 5 then
-		bubbleRate = bubbleRate - .1
-		bubbleSpeedup = 0
-		maxBubbles = maxBubbles + 1
-	end
 
 	if tangoing > 0 then
 		tangoing = math.max(tangoing - delta, 0)
@@ -150,19 +141,13 @@ function love.draw()
 
 	
 	love.graphics.setColor(0, 0, 200, 128)
-	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBarDisplay / 20), 40)
+	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBarDisplay / bubbleBarMax), 40)
 	love.graphics.setColor(0, 0, 200, 255)
 	love.graphics.line(love.graphics.getWidth() / 2, 10, love.graphics.getWidth() / 2, 50)
 	love.graphics.rectangle('line', 60, 10, love.graphics.getWidth() - 120, 40)
 
 	love.graphics.setColor(255, 255, 255, 100)
 	love.graphics.draw(water, 0, 0)
-
-	love.graphics.setColor(0, 200, 200, 128)
-	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBar / 20), 40)
-	love.graphics.setColor(0, 200, 200, 255)
-	love.graphics.line(love.graphics.getWidth() / 2, 10, love.graphics.getWidth() / 2, 50)
-	love.graphics.rectangle('line', 60, 10, love.graphics.getWidth() - 120, 40)
 
 	koi1:draw()
 	koi2:draw()
@@ -210,13 +195,16 @@ function love.restart()
 	bubbleBar = 0
 
 	puffer.size = 40
+	puffer.baseSpeed = 75
+	puffer.speed = 0
 end
 
 function love.keypressed(key)
 	if key == ' ' then
-		if bubbleBar >= 20 then
-			bubbleBar = bubbleBar - 20
-			tangoing = 5
+		if bubbleBar >= bubbleBarMax then
+			bubbleBar = bubbleBar - bubbleBarMax
+			tangoing = 3
+			bubbleBarMax = bubbleBarMax + 20
 		end
 	end
 end

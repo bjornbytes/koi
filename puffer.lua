@@ -4,12 +4,15 @@ function Puffer.create()
 	local puffer = {
 		x = 400,
 		y = 300,
+		hp = 5,
 		angle = 0,
-		size = 40,
-		displaySize = 40,
+		size = 60,
+		displaySize = 60,
 		speed = 0,
+		baseSpeed = 75,
 		lastBubble = 0,
-		sprite = love.graphics.newImage('img/pufferFish.png')
+		sprite = love.graphics.newImage('img/pufferFish.png'),
+		lastHurt = 0
 	}
 
 	setmetatable(puffer, {__index = Puffer})
@@ -32,7 +35,7 @@ function Puffer:update()
     end
 
     if minidx then
-    	if self.speed < 75 then self.speed = self.speed + 10 * delta end
+    	if self.speed < self.baseSpeed then self.speed = self.speed + 10 * delta end
     	self.angle = math.anglerp(self.angle, math.direction(self.x, self.y, bubbles[minidx].x, bubbles[minidx].y), .025)
     	if mindis < 200 then animHead:seek(4)
 		elseif mindis < 300 then animHead:seek(3)
@@ -43,15 +46,15 @@ function Puffer:update()
     end
 
     self.lastBubble = self.lastBubble + delta
-    if self.lastBubble > 10 then
-    	if self.size > 40 then
+    if self.lastBubble > 6 then
+    	if self.size > 60 then
     		self.size = self.size - (1 * delta)
     	end
 
-    	self.speed = math.min(self.speed + (10 * delta), 200)
+    	self.speed = math.min(self.speed + (25 * delta), self.baseSpeed * 1.5)
     else
     	if self.speed > 0 then
-    		self.speed = math.max(self.speed - (5 * delta), 75)
+    		self.speed = math.max(self.speed - (25 * delta), self.baseSpeed)
     	end
     end
 
@@ -61,6 +64,7 @@ function Puffer:update()
     	xangle = xangle * -1
 
     	self.angle = math.direction(0, 0, xangle, yangle)
+    	self.speed = self.speed * 0.6
 
     	if self.x < self.size then self.x = self.size + 1
 		elseif self.x > love.graphics.getWidth() - self.size then self.x = love.graphics.getWidth() - (self.size + 1) end
@@ -72,25 +76,48 @@ function Puffer:update()
     	yangle = yangle * -1
 
     	self.angle = math.direction(0, 0, xangle, yangle)
+    	self.speed = self.speed * 0.6
+
     	if self.y < self.size then self.y = self.size + 1
 		elseif self.y > love.graphics.getHeight() - self.size then self.y = love.graphics.getHeight() - (self.size + 1) end
 	end
 
 	self.displaySize = math.lerp(self.displaySize, self.size, .05)
+	self.lastHurt = self.lastHurt + delta
 end
 
 function Puffer:draw()
-	love.graphics.setColor(255, 255, 255)
+	if self.lastBubble > 6 then
+		love.graphics.setColor(HSV(0, math.min(255 - ((10 - self.lastBubble) / 4) * 255, 255), 255))
+	else
+		love.graphics.setColor(255, 255, 255)
+	end
 	
 	local scale = 3.5 * self.displaySize / self.sprite:getWidth()
 	local scaleSign = -1
 	if self.angle % (2 * math.pi) > 1.5 * math.pi or self.angle % (2 * math.pi) < .5 * math.pi then scaleSign = 1 end
-	--love.graphics.draw(sprHead, self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
+
 	animHead:draw(self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
 	animFins:draw(self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
 
 	if love.keyboard.isDown(' ') then
 		love.graphics.setColor(255, 0, 0)
 		love.graphics.circle('line', self.x, self.y, self.size)
+	end
+end
+
+function Puffer:hurt()
+	local dir = math.direction(self.x, self.y, love.mouse.getPosition())
+
+	self.angle = dir + math.pi
+	self.speed = 800
+
+	if self.lastHurt > 5 then
+		bubbleRate = bubbleRate - .2
+
+		self.hp = self.hp - 1
+		self.lastHurt = 0
+		self.size = self.size * 0.5
+		self.baseSpeed = self.baseSpeed + 50
 	end
 end

@@ -39,12 +39,12 @@ function Bubble:update()
 
 	if math.hcoca(self.x, self.y, self.size, koi1.x, koi1.y, 50) or math.hcoca(self.x, self.y, self.size, koi2.x, koi2.y, 50) then
 		self:pop()
-		bubbleBar = math.min(bubbleBar + 1, 20)
+		bubbleBar = math.min(bubbleBar + 1, bubbleBarMax)
 	end
 
 	if math.hcoca(self.x, self.y, self.size, puffer.x, puffer.y, puffer.size) then
 		self:pop()
-		puffer.size = puffer.size + 6
+		puffer.size = puffer.size + 10
 		puffer.lastBubble = 0
 	end
 
