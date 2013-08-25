@@ -96,6 +96,10 @@ local loader = coroutine.create(function()
 	bubbleSound[7] = love.audio.newSource('sound/bubbles/pop7.mp3', 'stream')
 	coroutine.yield(38)
 	bubbleSound[8] = love.audio.newSource('sound/bubbles/pop8.mp3', 'stream')
+	coroutine.yield(39)
+	pauseResumeButton = love.graphics.newImage('img/buttonResume.png')
+	coroutine.yield(40)
+	pauseResumeButtonHover = love.graphics.newImage('img/buttonResumeHover.png')
 end)
 
 function love.load()
@@ -119,10 +123,10 @@ function love.load()
 			love.graphics.clear()
 			love.graphics.setColor(0, 62, 116, 255)
 			love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
-			love.graphics.setColor(255, 255, 255, (progress / 38) * 255)
-			if sprLogo then love.graphics.draw(sprLogo, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, (progress / 38) * math.pi * 2, 1, 1, 160, 160) end
+			love.graphics.setColor(255, 255, 255, (progress / 40) * 255)
+			if sprLogo then love.graphics.draw(sprLogo, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, (progress / 40) * math.pi * 2, 1, 1, 160, 160) end
 			love.graphics.setColor(255, 255, 255, 60)
-			love.graphics.rectangle('fill', love.graphics.getWidth() / 2 - 200, 600, (progress / 38) * 400, 20)
+			love.graphics.rectangle('fill', love.graphics.getWidth() / 2 - 200, 600, (progress / 40) * 400, 20)
 			love.graphics.setColor(255, 255, 255, 120)
 			love.graphics.rectangle('line', love.graphics.getWidth() / 2 - 201, 599, 402, 22)
 			love.graphics.present()
@@ -150,7 +154,10 @@ function love.load()
 	tutorialButtonAlpha = .75
 
 	-- Game Assets: Audio
+	backgroundSound:setLooping(true)
+	aquariumSound:setLooping(true)
 	love.audio.play(aquariumSound)
+
 	paused = false
 
 	-- Game Objects
@@ -430,6 +437,30 @@ function love.draw()
 	if tangoing > 0 then
 		love.graphics.pop()
 	end
+
+	if paused then
+		love.graphics.setColor(0, 0, 0, 180)
+		love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+
+		love.graphics.setColor(255, 255, 255, 200)
+		love.graphics.draw(sprLogo, love.graphics.getWidth() / 2, 160, math.cos(gt / 4), 1, 1, 160, 160)
+
+		love.graphics.setColor(255, 255, 255, 255)
+
+		local x, y = love.mouse.getX(), love.mouse.getY()
+		
+		if math.inside(x, y, 470, 313, 340, 100) then
+			love.graphics.draw(pauseResumeButtonHover, 0, -327)
+		else
+			love.graphics.draw(pauseResumeButton, 0, -327)
+		end
+
+		if math.inside(x, y, 470, 440, 340, 100) then
+			love.graphics.draw(menuButtonQuitHover, 0, -200)
+		else
+			love.graphics.draw(menuButtonQuit, 0, -200)
+		end
+	end
 end
 
 function love.gameover()
@@ -446,8 +477,11 @@ function love.restart()
 	love.audio.rewind(gameoverSound)
 	
 	if menu then
-		love.audio.resume(backgroundSound)
+		if not muted then love.audio.resume(aquariumSound) end
+		love.audio.stop(backgroundSound)
 		love.audio.stop(gameoverSound)
+	elseif not muted then
+		love.audio.resume(backgroundSound)
 	end
 
 	koi1.color = {255, 0, 0}
@@ -542,16 +576,29 @@ function love.mousepressed(x, y, key)
 				love.restart()
 			elseif math.inside(x, y, 500, 600, gameoverQuit:getWidth() * scale.x, gameoverQuit:getHeight() * scale.y) then
 				menu = true
+				love.restart()
 				gameover = 0
 			end
 		end
 	elseif tutorial then
 		if key == 'l' then
-			if math.inside(love.mouse.getX(), love.mouse.getY(), 513, 568, 241, 67) then
+			if math.inside(x, y, 513, 568, 241, 67) then
 				tutorial = false
 				love.restart()
 				audio.play(backgroundSound)
 			end
 		end
-	end 
+	elseif paused then
+		if key == 'l' then
+			-- Resume
+			if math.inside(x, y, 470, 313, 340, 100) then
+				paused = false
+			-- Quit
+			elseif math.inside(x, y, 470, 440, 340, 100) then
+				menu = true
+				paused = false
+				love.restart()
+			end
+		end
+	end
 end
