@@ -400,9 +400,15 @@ function love.restart()
 	end
 
 	bubbleTimer = 0
-	bubbleRate = 2
+	bubbleRate = .9
+	nextBubble = .25
+
 	bubbleBar = 0
 	bubbleBarMax = 10
+	bubbleBarDisplay = 0
+
+	sharkTimer = 0
+	nextShark = 10
 
 	if #sharks > 0 then
 		sharks[1] = nil
