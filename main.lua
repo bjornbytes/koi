@@ -57,11 +57,16 @@ function love.load()
 	gameoverQuit = love.graphics.newImage('img/gameoverQuit.png')
 	gameoverText = love.graphics.newImage('img/gameoverText.png')
 
+	tutorialText = love.graphics.newImage('img/tutorialMain.png')
+	tutorialButton = love.graphics.newImage('img/tutorialButton.png')
+	tutorialButtonAlpha = .75
+
 	-- Game Assets: Audio
 	backgroundSound = love.audio.newSource('sound/backgroundMusic.mp3', 'stream')
 	aquariumSound = love.audio.newSource('sound/aquarium.mp3', 'stream')
 	gameoverSound = love.audio.newSource('sound/gameoverSound.wav', 'stream')
 	bubbleBarSound = love.audio.newSource('sound/bubbleBar.mp3', 'stream')
+	rainbowSexSound = love.audio.newSource('sound/crazy.mp3', 'stream')
 	bubbleSound = {
 		love.audio.newSource('sound/bubbles/pop1.mp3', 'stream'),
 		love.audio.newSource('sound/bubbles/pop2.mp3', 'stream'),
@@ -79,6 +84,7 @@ function love.load()
 	-- Game States
 	gt = 0
 	gameover = 0
+	tutorial = false
 
 	-- Game Objects
 	koi1 = Koi.create()
@@ -124,6 +130,27 @@ function love.update(dt)
 
 	if gameover > 0 then
 		gameover = math.min(gameover + delta * 15, 1)
+	end
+
+	if tutorial then
+		if math.inside(love.mouse.getX(), love.mouse.getY(), 513, 568, 241, 67) then
+			tutorialButtonAlpha = math.min(tutorialButtonAlpha + delta, 1)
+		else
+			tutorialButtonAlpha = math.max(tutorialButtonAlpha - delta, .75)
+		end
+	end
+
+	if tutorial or menu then
+		if math.random() < .5 then
+			local bubby = LilBubby.create(math.random(0, love.graphics.getWidth()), love.graphics.getHeight())
+			bubby.hp, bubby.maxHp = 10, 10
+		end
+
+		for _, bubby in pairs(lilbubbies) do
+			bubby:update()
+		end
+
+		return
 	end
 
 	fx.pulse:send( "time", gt )
@@ -220,6 +247,22 @@ function love.draw()
 	love.graphics.setColor(255, 255, 255, 100)
 	love.graphics.draw(water, 0, 0)
 
+	if tutorial or menu then
+		for _, bub in pairs(lilbubbies) do
+			bub:draw()
+		end
+	end
+
+	-- Game State: Tutorial
+	if tutorial then
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.draw(tutorialText, 0, 0)
+		love.graphics.setColor(255, 255, 255, tutorialButtonAlpha * 255)
+		love.graphics.draw(tutorialButton, 0, 0)
+
+		return
+	end
+
 	koi1:draw()
 	koi2:draw()
 	puffer:draw()
@@ -304,7 +347,9 @@ function love.keypressed(key)
 		if bubbleBar >= bubbleBarMax then
 			love.audio.pause(bubbleBarSound)
 			love.audio.rewind(bubbleBarSound)
-			
+
+			love.audio.play(rainbowSexSound)
+
 			bubbleBar = bubbleBar - bubbleBarMax
 			tangoing = 3
 			bubbleBarMax = bubbleBarMax + 15
@@ -327,5 +372,11 @@ function love.mousepressed(x, y, key)
 				love.event.push('quit')
 			end
 		end
-	end
+	elseif tutorial then
+		if key == 'l' then
+			if math.inside(love.mouse.getX(), love.mouse.getY(), 513, 568, 241, 67) then
+				tutorial = false
+			end
+		end
+	end 
 end
