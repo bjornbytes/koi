@@ -41,24 +41,24 @@ function love.load()
 	bubbleSpeedup = 0
 
 	sprKoi = {}
-	sprKoi[1] = love.graphics.newImage('blackKoi.png')
-	sprKoi[2] = love.graphics.newImage('blackKoi.png')
+	sprKoi[1] = love.graphics.newImage('img/blackKoi.png')
+	sprKoi[2] = love.graphics.newImage('img/blackKoi.png')
 
 	animKoi = {}
 	animKoi[1] = newAnimation(sprKoi[1], 128, 128, 0.1, 0)
 	animKoi[2] = newAnimation(sprKoi[2], 128, 128, 0.1, 0)
 
-	sprFins = love.graphics.newImage('pufferFins.png')
-	sprHead = love.graphics.newImage('pufferHead.png')
+	sprFins = love.graphics.newImage('img/pufferFins.png')
+	sprHead = love.graphics.newImage('img/pufferHead.png')
 	animFins = newAnimation(sprFins, 1600, 1600, .15, 0)
 	animHead = newAnimation(sprHead, 1600, 1600, .1, 0)
 	animHead:setMode('bounce')
 
-	sandTile = love.graphics.newImage('sandTile.png')
-	water = love.graphics.newImage('water.png')
-	waterLight = love.graphics.newImage('waterLight.png')
-	sprBubble = love.graphics.newImage('bubble.png')
-	sprShark = love.graphics.newImage('pufferFish.png')
+	sandTile = love.graphics.newImage('img/sandTile.png')
+	water = love.graphics.newImage('img/water.png')
+	waterLight = love.graphics.newImage('img/waterLight.png')
+	sprBubble = love.graphics.newImage('img/bubble.png')
+	sprShark = love.graphics.newImage('img/pufferFish.png')
 
 	for i = 1, 6 do
 		StarFish.create()

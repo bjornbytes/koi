@@ -3,10 +3,10 @@ StarFish = {}
 starfish = {}
 
 sfImages = {
-	love.graphics.newImage('sfGreen.png'),
-	love.graphics.newImage('sfMaroon.png'),
-	love.graphics.newImage('sfPurple.png'),
-	love.graphics.newImage('sfRed.png')
+	love.graphics.newImage('img/sfGreen.png'),
+	love.graphics.newImage('img/sfMaroon.png'),
+	love.graphics.newImage('img/sfPurple.png'),
+	love.graphics.newImage('img/sfRed.png')
 }
 
 function StarFish.create()

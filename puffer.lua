@@ -9,7 +9,7 @@ function Puffer.create()
 		displaySize = 40,
 		speed = 0,
 		lastBubble = 0,
-		sprite = love.graphics.newImage('pufferFish.png')
+		sprite = love.graphics.newImage('img/pufferFish.png')
 	}
 
 	setmetatable(puffer, {__index = Puffer})
