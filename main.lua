@@ -1,5 +1,4 @@
 require 'util'
-require 'shaders'
 require 'koi'
 require 'puffer'
 require 'shark'
@@ -15,8 +14,6 @@ toUpdate = {
 }
 
 function love.load()
-	Dirt.load()
-
 	koi1 = Koi.create()
 	koi2 = Koi.create()
 
@@ -72,7 +69,6 @@ function love.update(dt)
 		end
 	end
 
-	Dirt.update()
 	koi1:update()
 	koi2:update()
 	puffer:update()
@@ -117,8 +113,7 @@ end
 
 function love.draw()
 	love.graphics.reset()
-
-	Dirt.draw(sandTile)
+	love.graphics.draw(sandTile, 0, 0)
 	
 	love.graphics.setColor(0, 0, 200, 128)
 	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBarDisplay / 20), 40)
@@ -126,24 +121,21 @@ function love.draw()
 	love.graphics.line(love.graphics.getWidth() / 2, 10, love.graphics.getWidth() / 2, 50)
 	love.graphics.rectangle('line', 60, 10, love.graphics.getWidth() - 120, 40)
 
-	-- love.graphics.draw(water, 0, 0)
+	love.graphics.draw(water, 0, 0)
 
-	-- love.graphics.setColor(0, 200, 200, 128)
-	-- love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBar / 20), 40)
-	-- love.graphics.setColor(0, 200, 200, 255)
-	-- love.graphics.line(love.graphics.getWidth() / 2, 10, love.graphics.getWidth() / 2, 50)
-	-- love.graphics.rectangle('line', 60, 10, love.graphics.getWidth() - 120, 40)
+	love.graphics.setColor(0, 200, 200, 128)
+	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBar / 20), 40)
+	love.graphics.setColor(0, 200, 200, 255)
+	love.graphics.line(love.graphics.getWidth() / 2, 10, love.graphics.getWidth() / 2, 50)
+	love.graphics.rectangle('line', 60, 10, love.graphics.getWidth() - 120, 40)
 
-	-- koi1:draw()
-	-- koi2:draw()
-	-- puffer:draw()
+	koi1:draw()
+	koi2:draw()
+	puffer:draw()
 
-	-- for _, bubble in pairs(bubbles) do
-	-- 	bubble:draw()
-	-- end
-
-	-- love.graphics.setColor(255, 255, 255, 192)
-	-- love.graphics.draw(water, 0, 0)
+	for _, bubble in pairs(bubbles) do
+		bubble:draw()
+	end
 	
 	for _, shark in pairs(sharks) do
 		shark:draw()
@@ -189,8 +181,4 @@ function love.keypressed(key)
 			blowing = .5
 		end
 	end
-end
-
-function love.mousepressed(x, y, button)
-	Dirt.mousepressed(x, y, button)
 end

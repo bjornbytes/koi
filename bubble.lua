@@ -85,11 +85,13 @@ function Bubble:pop()
 end
 
 function Bubble:draw()
-	love.graphics.setColor(200, 200, 255)
-	love.graphics.circle('line', self.x, self.y, self.size)
+	if love.keyboard.isDown(' ') then
+		love.graphics.setColor(200, 200, 255)
+		love.graphics.circle('line', self.x, self.y, self.size)
+	end
 
-	local scale = 2 * self.size / sprBubble:getWidth()
+	local scale = 2.2 * self.size / sprBubble:getWidth()
 
 	love.graphics.setColor(255, 255, 255)
-	love.graphics.draw(sprBubble, self.x, self.y, 0, scale, scale, sprBubble:getWidth() / 2, sprBubble:getHeight() / 2)
+	love.graphics.draw(sprBubble, self.x, self.y, 0, scale, scale, sprBubble:getWidth() / 2 + 1, sprBubble:getHeight() / 2 + 1)
 end
