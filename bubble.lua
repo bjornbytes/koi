@@ -58,6 +58,14 @@ end
 
 function Bubble:pop()
 	bubbles[self.id] = nil
+
+	for _ = 1, 60 do
+		local l = LilBubby.create()
+		l.x = self.x - 20 + math.random() * (2 * 20)
+		l.y = self.y - 20 + math.random() * (2 * 20)
+		l.dir = math.random(2 * math.pi)
+		l.speed = 400
+	end
 end
 
 function Bubble:draw()
@@ -110,3 +118,53 @@ function RainbowSex:draw()
 	love.graphics.setColor(self.r, self.g, self.b, (self.hp / self.maxHp) * 255)
 	love.graphics.circle('fill', self.x, self.y, 100 * (1 - (self.hp / self.maxHp)))
 end
+
+LilBubby = {}
+
+lilbubbies = {}
+
+function LilBubby.create(x, y)
+	local bub = {
+		id = #lilbubbies + 1,
+		x = x,
+		y = y,
+		size = 0,
+		maxSize = 10 + math.random() * 10
+	}
+
+	bub.hp = math.random() * .5
+	bub.maxHp = bub.hp
+	bub.dir = (math.pi * 1.5) - .15 + math.random() * .3
+	bub.speed = 100 + math.random(50)
+
+	setmetatable(bub, {__index = LilBubby})
+
+	lilbubbies[bub.id] = bub
+
+	return bub
+end
+
+function LilBubby:update()
+	self.x = self.x + math.cos(self.dir) * self.speed * delta
+	self.y = self.y + math.sin(self.dir) * self.speed * delta
+
+	local d = math.anglediff(self.dir, math.pi * 1.5)
+	self.dir = self.dir + (d * delta * 3)
+
+	if self.speed > 150 then self.speed = self.speed - 20 * delta end
+
+	self.size = math.min(self.size + 50 * delta, self.maxSize)
+
+	self.hp = self.hp - delta
+	if self.hp < 0 then
+		lilbubbies[self.id] = nil
+	end
+end
+
+function LilBubby:draw()
+	local scale = 2.2 * self.size / sprBubble:getWidth()
+
+	love.graphics.setColor(255, 255, 255, (self.hp / self.maxHp) * 200)
+	love.graphics.draw(sprBubble, self.x, self.y, 0, scale, scale, sprBubble:getWidth() / 2 + 1, sprBubble:getHeight() / 2 + 1)
+end
+

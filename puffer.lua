@@ -84,11 +84,17 @@ function Puffer:update()
 
 	self.displaySize = math.lerp(self.displaySize, self.size, .05)
 	self.lastHurt = self.lastHurt + delta
+
+	if math.random() < .2 then
+		local l = LilBubby.create()
+		l.x = self.x - self.size + math.random() * (2 * self.size)
+		l.y = self.y - self.size + math.random() * (2 * self.size)
+	end
 end
 
 function Puffer:draw()
 	if self.lastBubble > 6 then
-		love.graphics.setColor(HSV(0, math.min(128 - ((12 - self.lastBubble) / 6) * 128, 128), 255))
+		love.graphics.setColor(HSV(0, math.min(60 - ((12 - self.lastBubble) / 6) * 60, 60), 255))
 	else
 		love.graphics.setColor(255, 255, 255)
 	end

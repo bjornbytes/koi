@@ -12,7 +12,8 @@ toUpdate = {
 	bubbles,
 	meanBubbles,
 	rainbowSexes,
-	sharks
+	sharks,
+	lilbubbies
 }
 
 function love.load()
@@ -171,6 +172,10 @@ function love.draw()
 	koi2:draw()
 	puffer:draw()
 
+	for _, bub in pairs(lilbubbies) do
+		bub:draw()
+	end
+
 	for _, bubble in pairs(bubbles) do
 		bubble:draw()
 	end
@@ -211,6 +216,7 @@ function love.restart()
 	bubbleTimer = 0
 	bubbleRate = 2
 	bubbleBar = 0
+	bubbleBarMax = 10
 
 	puffer.size = 40
 	puffer.baseSpeed = 75
