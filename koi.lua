@@ -93,8 +93,8 @@ function Koi:update()
 		for i = 1, 2 do
 			local sex = RainbowSex.create()
 			local d = math.random(2 * math.pi)
-			sex.x = self.x + math.cos(d) * 100
-			sex.y = self.y + math.sin(d) * 100
+			sex.x = self.x + math.cos(d) * 200
+			sex.y = self.y + math.sin(d) * 200
 		end
 	end
 
