@@ -84,7 +84,7 @@ function Koi:update()
 
 		end
 
-		for i = 1, 10 do
+		for i = 1, 2 do
 			local sex = RainbowSex.create()
 			sex.x = self.x
 			sex.y = self.y
