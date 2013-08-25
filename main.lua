@@ -52,10 +52,21 @@ function love.load()
 	waterLight = love.graphics.newImage('img/waterLight.png')
 	sprBubble = love.graphics.newImage('img/bubble.png')
 
+	sprBandaid1 = love.graphics.newImage('img/bandaid1.png')
+	sprBandaid2 = love.graphics.newImage('img/bandaid2.png')
+
 	gameoverBG = love.graphics.newImage('img/gameoverBG.png')
 	gameoverRestart = love.graphics.newImage('img/gameoverRestart.png')
 	gameoverQuit = love.graphics.newImage('img/gameoverQuit.png')
 	gameoverText = love.graphics.newImage('img/gameoverText.png')
+
+	menuBG = love.graphics.newImage('img/menuBG.png')
+	menuButtonPlay = love.graphics.newImage('img/buttonPlayHover.png')
+	menuButtonPlayAlpha = .8
+	menuButtonCredits = love.graphics.newImage('img/buttonCredits.png')
+	menuButtonCreditsHover = love.graphics.newImage('img/buttonCreditsHover.png')
+	menuButtonQuit = love.graphics.newImage('img/buttonQuit.png')
+	menuButtonQuitHover = love.graphics.newImage('img/buttonQuitHover.png')
 
 	tutorialText = love.graphics.newImage('img/tutorialMain.png')
 	tutorialButton = love.graphics.newImage('img/tutorialButton.png')
@@ -78,14 +89,15 @@ function love.load()
 		love.audio.newSource('sound/bubbles/pop8.mp3', 'stream')
 	}
 
-	love.audio.play(backgroundSound)
-	love.audio.play(aquariumSound)
+	audio.play(aquariumSound)
 
 	-- Game States
 	gt = 0
 	gameover = 0
 	win = 0
+	menu = true
 	tutorial = false
+	credits = false
 
 	-- Game Objects
 	koi1 = Koi.create()
@@ -103,6 +115,7 @@ function love.load()
 	koi2.angle = math.pi
 
 	puffer = Puffer.create()
+	puffer.x, puffer.y = 640, 400
 
 	bubbleTimer = 0
 	bubbleRate = 0.9
@@ -122,18 +135,28 @@ function love.load()
 
 	tangoing = 0
 	kinky = false
-
 end
 
 function love.update(dt)
 	gt = (gt + dt)
 	delta = dt
 
-	if gameover > 0 then
-		gameover = math.min(gameover + delta * 15, 1)
-	end
+	fx.pulse:send( "time", gt )
+	fx.menuPulse:send( "time", gt )
 
-	if win > 0 then
+	if menu then
+		local x, y = love.mouse.getPosition()
+		if math.inside(x, y, 400, 360, 480, 140) then
+			menuButtonPlayAlpha = math.min(menuButtonPlayAlpha + delta, 1)
+		else
+			menuButtonPlayAlpha = math.max(menuButtonPlayAlpha - delta, .75)
+		end
+
+	elseif credits then
+		--
+	elseif gameover > 0 then
+		gameover = math.min(gameover + delta * 15, 1)
+	elseif win > 0 then
 		win = math.min(win + delta * 15, 1)
 	end
 
@@ -157,8 +180,6 @@ function love.update(dt)
 
 		return
 	end
-
-	fx.pulse:send( "time", gt )
 
 	for _, table in pairs(toUpdate) do
 		for _, inst in pairs(table) do
@@ -207,6 +228,39 @@ end
 function love.draw()
 	love.graphics.reset()
 
+	if menu then
+		love.graphics.setPixelEffect(fx.menuPulse)
+		love.graphics.setColor(255, 255, 255, 200)
+		love.graphics.draw(menuBG, 0, 0)
+		love.graphics.setPixelEffect()
+
+		love.graphics.setColor(255, 255, 255, 160)
+		
+
+		love.graphics.setColor(255, 255, 255, 255 * menuButtonPlayAlpha)
+		love.graphics.draw(menuButtonPlay, 0, 0)
+		love.graphics.setColor(255, 255, 255, 255)
+
+		local x, y = love.mouse.getPosition()
+		if math.inside(x, y, 470, 515, 340, 100) then
+			love.graphics.draw(menuButtonCreditsHover, 0, 0)
+		else
+			love.graphics.draw(menuButtonCredits, 0, 0)
+		end
+
+		if math.inside(x, y, 470, 640, 340, 100) then
+			love.graphics.draw(menuButtonQuitHover, 0, 0)
+		else
+			love.graphics.draw(menuButtonQuit, 0, 0)
+		end
+
+		for _, bub in pairs(lilbubbies) do
+			bub:draw()
+		end
+
+		return
+	end
+
 	-- Game State: Gameover
 	if gameover > 0 then
 		local scale = {
@@ -224,6 +278,11 @@ function love.draw()
 		love.graphics.draw(gameoverText, 50 + random, 50 + random, 0, scale.x, scale.y)
 
 		return
+	end
+
+	-- Game State: Win
+	if win > 0 then
+		-- win stuff
 	end
 
 	if tangoing > 0 then
@@ -252,7 +311,7 @@ function love.draw()
 	love.graphics.setColor(255, 255, 255, 100)
 	love.graphics.draw(water, 0, 0)
 
-	if tutorial or menu then
+	if tutorial then
 		for _, bub in pairs(lilbubbies) do
 			bub:draw()
 		end
@@ -308,7 +367,7 @@ end
 function love.gameover()
 	if gameover == 0 then
 		love.audio.pause(backgroundSound)
-		love.audio.play(gameoverSound)
+		audio.play(gameoverSound)
 
 		gameover = .1
 	end
@@ -318,13 +377,19 @@ function love.restart()
 	love.audio.stop(gameoverSound)
 	love.audio.rewind(gameoverSound)
 	
-	love.audio.resume(backgroundSound)
+	if menu then
+		love.audio.resume(backgroundSound)
+		love.audio.stop(gameoverSound)
+	end
 
 	koi1.color = {255, 0, 0}
 	koi2.color = {0, 0, 255}
 
 	koi1.x, koi1.y = 64, 64
 	koi2.x, koi2.y = love.graphics.getWidth() - 64, love.graphics.getHeight() - 64
+	puffer.x, puffer.y = 640, 400
+	puffer.angle = math.random(2 * math.pi)
+	puffer.speed = 30
 
 	koi1.speed, koi2.speed = 0, 0
 
@@ -341,10 +406,11 @@ function love.restart()
 		sharks[1] = nil
 	end
 
-	puffer.size = 40
+	puffer.size = 60
 	puffer.baseSpeed = 75
 	puffer.speed = 0
 	puffer.lastBubble = 0
+	puffer.bandaids = {}
 end
 
 function love.keypressed(key)
@@ -353,17 +419,41 @@ function love.keypressed(key)
 			love.audio.pause(bubbleBarSound)
 			love.audio.rewind(bubbleBarSound)
 
-			love.audio.play(rainbowSexSound)
+			audio.play(rainbowSexSound)
 
 			bubbleBar = bubbleBar - bubbleBarMax
 			tangoing = 3
 			bubbleBarMax = bubbleBarMax + 15
 		end
+	elseif key == 'm' then
+		muted = not muted
+
+		if muted then
+			love.audio.pause()
+		else
+			if not menu then
+				love.audio.resume(backgroundSound)
+			end
+			
+			love.audio.resume(aquariumSound)
+		end
 	end
 end
 
 function love.mousepressed(x, y, key)
-	if gameover > 0 then
+	if menu then
+		if math.inside(x, y, 400, 360, 480, 140) then
+			tutorial = true
+			menu = false
+		elseif math.inside(x, y, 470, 515, 340, 100) then
+			credits = true
+			menu = false
+		elseif math.inside(x, y, 470, 640, 340, 100) then
+			love.event.push('quit')
+		end
+	elseif credits then
+		--
+	elseif gameover > 0 then
 		if key == 'l' then
 			local scale = {
 				x = love.graphics.getWidth() / gameoverBG:getWidth(),
@@ -374,13 +464,16 @@ function love.mousepressed(x, y, key)
 				gameover = 0
 				love.restart()
 			elseif math.inside(x, y, 500, 600, gameoverQuit:getWidth() * scale.x, gameoverQuit:getHeight() * scale.y) then
-				love.event.push('quit')
+				menu = true
+				gameover = 0
 			end
 		end
 	elseif tutorial then
 		if key == 'l' then
 			if math.inside(love.mouse.getX(), love.mouse.getY(), 513, 568, 241, 67) then
 				tutorial = false
+				love.restart()
+				audio.play(backgroundSound)
 			end
 		end
 	end 

@@ -42,7 +42,7 @@ function Bubble:update()
 		bubbleBar = math.min(bubbleBar + 1, bubbleBarMax)
 
 		if bubbleBar == bubbleBarMax then
-			love.audio.play(bubbleBarSound)
+			audio.play(bubbleBarSound)
 		end
 	end
 
@@ -63,7 +63,7 @@ end
 function Bubble:pop()
 	bubbles[self.id] = nil
 
-	love.audio.play(bubbleSound[math.random(1, #bubbleSound)])
+	audio.play(bubbleSound[math.random(1, #bubbleSound)])
 
 	for _ = 1, 60 do
 		local l = LilBubby.create()

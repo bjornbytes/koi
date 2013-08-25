@@ -12,7 +12,8 @@ function Puffer.create()
 		baseSpeed = 75,
 		lastBubble = 0,
 		sprite = love.graphics.newImage('img/pufferFish.png'),
-		lastHurt = 0
+		lastHurt = 0,
+		bandaids = {}
 	}
 
 	setmetatable(puffer, {__index = Puffer})
@@ -105,6 +106,13 @@ function Puffer:draw()
 	animTail:draw(self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
 	animHead:draw(self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
 	animFins:draw(self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
+	for _, b in pairs(self.bandaids) do
+		if b.idx == 1 then
+			love.graphics.draw(sprBandaid1, self.x + (b.offsetx * scale * scaleSign), self.y + (b.offsety * scale), b.angle, scale * scaleSign * .5, scale * .5, 400, 400)
+		else
+			love.graphics.draw(sprBandaid2, self.x + (b.offsetx * scale * scaleSign), self.y + (b.offsety * scale), b.angle, scale * scaleSign * .5, scale * .5, 400, 400)
+		end
+	end
 
 	if love.keyboard.isDown(' ') then
 		love.graphics.setColor(255, 0, 0)
@@ -122,8 +130,22 @@ function Puffer:hurt()
 		bubbleRate = bubbleRate - 0.035 * (self.hp)
 
 		self.hp = self.hp - 1
+		if self.hp == 0 then
+			-- win.
+			win = .1
+			return
+		end
+
+		table.insert(self.bandaids, {
+			idx = math.random(1, 2),
+			offsetx = -400 + math.random() * 400,
+			offsety = -400 + math.random() * 400,
+			angle = math.random(2 * math.pi)
+		})
 		self.lastHurt = 0
-		self.size = self.size * 0.5
+		if self.size > 40 then
+			self.size = self.size * 0.5
+		end
 		self.baseSpeed = self.baseSpeed + 50
 	end
 end
