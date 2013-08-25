@@ -16,24 +16,121 @@ toUpdate = {
 	lilbubbies
 }
 
+sprKoi = {}
+local loader = coroutine.create(function()
+	menuBG = love.graphics.newImage('img/menuBG.png')
+	coroutine.yield(1)
+	sprLogo = love.graphics.newImage('img/logo.png')
+	coroutine.yield(2)
+	sprKoi[1] = love.graphics.newImage('img/blackKoi.png')
+	coroutine.yield(3)
+	sprKoi[2] = love.graphics.newImage('img/whiteKoi.png')
+	coroutine.yield(4)
+	sprTail = love.graphics.newImage('img/pufferTail.png')
+	coroutine.yield(5)
+	sprFins = love.graphics.newImage('img/pufferFins.png')
+	coroutine.yield(6)
+	sprHead = love.graphics.newImage('img/pufferHead.png')
+	coroutine.yield(7)
+	sprShark = love.graphics.newImage('img/shark.png')
+	coroutine.yield(8)
+	sprBubbyBar = love.graphics.newImage('img/bubbleBar.png')
+	coroutine.yield(9)
+	sandTile = love.graphics.newImage('img/sandTile.png')
+	coroutine.yield(10)
+	water = love.graphics.newImage('img/water.png')
+	coroutine.yield(11)
+	waterLight = love.graphics.newImage('img/waterLight.png')
+	coroutine.yield(12)
+	sprBubble = love.graphics.newImage('img/bubble.png')
+	coroutine.yield(13)
+	sprBandaid1 = love.graphics.newImage('img/bandaid1.png')
+	coroutine.yield(14)
+	sprBandaid2 = love.graphics.newImage('img/bandaid2.png')
+	coroutine.yield(15)
+	gameoverBG = love.graphics.newImage('img/gameoverBG.png')
+	coroutine.yield(16)
+	gameoverRestart = love.graphics.newImage('img/gameoverRestart.png')
+	coroutine.yield(17)
+	gameoverQuit = love.graphics.newImage('img/gameoverQuit.png')
+	coroutine.yield(18)
+	gameoverText = love.graphics.newImage('img/gameoverText.png')
+	coroutine.yield(19)
+	menuButtonPlay = love.graphics.newImage('img/buttonPlayHover.png')
+	coroutine.yield(20)
+	menuButtonCredits = love.graphics.newImage('img/buttonCredits.png')
+	coroutine.yield(21)
+	menuButtonCreditsHover = love.graphics.newImage('img/buttonCreditsHover.png')
+	coroutine.yield(22)
+	menuButtonQuit = love.graphics.newImage('img/buttonQuit.png')
+	coroutine.yield(23)
+	menuButtonQuitHover = love.graphics.newImage('img/buttonQuitHover.png')
+	coroutine.yield(24)
+	tutorialText = love.graphics.newImage('img/tutorialMain.png')
+	coroutine.yield(25)
+	tutorialButton = love.graphics.newImage('img/tutorialButton.png')
+	coroutine.yield(26)
+	backgroundSound = love.audio.newSource('sound/backgroundMusic.mp3', 'stream')
+	coroutine.yield(27)
+	aquariumSound = love.audio.newSource('sound/aquarium.mp3', 'stream')
+	coroutine.yield(28)
+	gameoverSound = love.audio.newSource('sound/gameoverSound.wav', 'stream')
+	coroutine.yield(29)
+	bubbleBarSound = love.audio.newSource('sound/bubbleBar.mp3', 'stream')
+	coroutine.yield(30)
+	rainbowSexSound = love.audio.newSource('sound/crazy.mp3', 'stream')
+	coroutine.yield(31)
+	bubbleSound = {}
+	bubbleSound[1] = love.audio.newSource('sound/bubbles/pop1.mp3', 'stream')
+	coroutine.yield(32)
+	bubbleSound[2] = love.audio.newSource('sound/bubbles/pop2.mp3', 'stream')
+	coroutine.yield(33)
+	bubbleSound[3] = love.audio.newSource('sound/bubbles/pop3.mp3', 'stream')
+	coroutine.yield(34)
+	bubbleSound[4] = love.audio.newSource('sound/bubbles/pop4.mp3', 'stream')
+	coroutine.yield(35)
+	bubbleSound[5] = love.audio.newSource('sound/bubbles/pop5.mp3', 'stream')
+	coroutine.yield(36)
+	bubbleSound[6] = love.audio.newSource('sound/bubbles/pop6.mp3', 'stream')
+	coroutine.yield(37)
+	bubbleSound[7] = love.audio.newSource('sound/bubbles/pop7.mp3', 'stream')
+	coroutine.yield(38)
+	bubbleSound[8] = love.audio.newSource('sound/bubbles/pop8.mp3', 'stream')
+end)
+
 function love.load()
+	-- Game States
+	gt = 0
+	gameover = 0
+	menu = true
+	tutorial = false
+	credits = false
+	loading = false
 
 	-- Game Assets: Images and Animations
-	sprKoi = {}
-	sprKoi[1] = love.graphics.newImage('img/blackKoi.png')
-	sprKoi[2] = love.graphics.newImage('img/whiteKoi.png')
+	while coroutine.status(loader) ~= 'dead' do
+		local err, progress = coroutine.resume(loader)
+		if progress then
+			love.event.pump()
+      for e, a, b, c, d in love.event.poll() do
+        love.handlers[e](a, b, c, d)
+      end
+			love.graphics.clear()
+			love.graphics.setColor(0, 62, 116, 255)
+			love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+			love.graphics.setColor(255, 255, 255, (progress / 38) * 255)
+			if sprLogo then love.graphics.draw(sprLogo, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, (progress / 38) * math.pi * 2, 1, 1, 160, 160) end
+			love.graphics.setColor(255, 255, 255, 60)
+			love.graphics.rectangle('fill', love.graphics.getWidth() / 2 - 200, 600, (progress / 38) * 400, 20)
+			love.graphics.setColor(255, 255, 255, 120)
+			love.graphics.rectangle('line', love.graphics.getWidth() / 2 - 201, 599, 402, 22)
+			love.graphics.present()
+		end
+	end
 
 	animKoi = {}
 	animKoi[1] = newAnimation(sprKoi[1], 128, 128, 0.1, 0)
 	animKoi[2] = newAnimation(sprKoi[2], 128, 128, 0.1, 0)
-
-	sprTail = love.graphics.newImage('img/pufferTail.png')
-	sprFins = love.graphics.newImage('img/pufferFins.png')
-	sprHead = love.graphics.newImage('img/pufferHead.png')
-
-	sprShark = love.graphics.newImage('img/shark.png')
-
-	sprBubbyBar = love.graphics.newImage('img/bubbleBar.png')
 
 	animFins = newAnimation(sprFins, 1600, 1600, .15, 0)
 	animTail = newAnimation(sprTail, 1600, 1600, .15, 0)
@@ -47,56 +144,12 @@ function love.load()
 	animShark:setMode('bounce')
 	animBubbyBar:setMode('bounce')
 
-	sandTile = love.graphics.newImage('img/sandTile.png')
-	water = love.graphics.newImage('img/water.png')
-	waterLight = love.graphics.newImage('img/waterLight.png')
-	sprBubble = love.graphics.newImage('img/bubble.png')
-
-	sprBandaid1 = love.graphics.newImage('img/bandaid1.png')
-	sprBandaid2 = love.graphics.newImage('img/bandaid2.png')
-
-	gameoverBG = love.graphics.newImage('img/gameoverBG.png')
-	gameoverRestart = love.graphics.newImage('img/gameoverRestart.png')
-	gameoverQuit = love.graphics.newImage('img/gameoverQuit.png')
-	gameoverText = love.graphics.newImage('img/gameoverText.png')
-
-	menuBG = love.graphics.newImage('img/menuBG.png')
-	menuButtonPlay = love.graphics.newImage('img/buttonPlayHover.png')
 	menuButtonPlayAlpha = .8
-	menuButtonCredits = love.graphics.newImage('img/buttonCredits.png')
-	menuButtonCreditsHover = love.graphics.newImage('img/buttonCreditsHover.png')
-	menuButtonQuit = love.graphics.newImage('img/buttonQuit.png')
-	menuButtonQuitHover = love.graphics.newImage('img/buttonQuitHover.png')
 
-	tutorialText = love.graphics.newImage('img/tutorialMain.png')
-	tutorialButton = love.graphics.newImage('img/tutorialButton.png')
 	tutorialButtonAlpha = .75
 
 	-- Game Assets: Audio
-	backgroundSound = love.audio.newSource('sound/backgroundMusic.mp3', 'stream')
-	aquariumSound = love.audio.newSource('sound/aquarium.mp3', 'stream')
-	gameoverSound = love.audio.newSource('sound/gameoverSound.wav', 'stream')
-	bubbleBarSound = love.audio.newSource('sound/bubbleBar.mp3', 'stream')
-	rainbowSexSound = love.audio.newSource('sound/crazy.mp3', 'stream')
-	bubbleSound = {
-		love.audio.newSource('sound/bubbles/pop1.mp3', 'stream'),
-		love.audio.newSource('sound/bubbles/pop2.mp3', 'stream'),
-		love.audio.newSource('sound/bubbles/pop3.mp3', 'stream'),
-		love.audio.newSource('sound/bubbles/pop4.mp3', 'stream'),
-		love.audio.newSource('sound/bubbles/pop5.mp3', 'stream'),
-		love.audio.newSource('sound/bubbles/pop6.mp3', 'stream'),
-		love.audio.newSource('sound/bubbles/pop7.mp3', 'stream'),
-		love.audio.newSource('sound/bubbles/pop8.mp3', 'stream')
-	}
-
 	love.audio.play(aquariumSound)
-
-	-- Game States
-	gt = 0
-	gameover = 0
-	menu = true
-	tutorial = false
-	credits = false
 
 	-- Game Objects
 	koi1 = Koi.create()

@@ -75,7 +75,7 @@ function Bubble:pop()
 end
 
 function Bubble:draw()
-	if love.keyboard.isDown(' ') then
+	if false and love.keyboard.isDown(' ') then
 		love.graphics.setColor(200, 200, 255)
 		love.graphics.circle('line', self.x, self.y, self.size)
 	end

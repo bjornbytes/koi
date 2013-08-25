@@ -114,7 +114,7 @@ function Puffer:draw()
 		end
 	end
 
-	if love.keyboard.isDown(' ') then
+	if false and love.keyboard.isDown(' ') then
 		love.graphics.setColor(255, 0, 0)
 		love.graphics.circle('line', self.x, self.y, self.size)
 	end
