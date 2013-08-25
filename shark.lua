@@ -9,7 +9,7 @@ function Shark.create()
 		y = 0,
 		angle = 0,
 		speed = 400,
-		sprite = love.graphics.newImage('pufferFish.png')
+		sprite = sprShark
 	}
 
 	setmetatable(shark, {__index = Shark})

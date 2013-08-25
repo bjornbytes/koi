@@ -51,6 +51,7 @@ function love.load()
 	water = love.graphics.newImage('water.png')
 	waterLight = love.graphics.newImage('waterLight.png')
 	sprBubble = love.graphics.newImage('bubble.png')
+	sprShark = love.graphics.newImage('pufferFish.png')
 
 	bubbleBar = 0
 	bubbleBarDisplay = 0
@@ -64,7 +65,6 @@ end
 
 function love.update(dt)
 	gt = (gt + dt)
-	if gt > 40 then gt = -10 end
 	delta = dt
 
 	fx.pulse:send( "time", gt )
@@ -111,13 +111,15 @@ function love.update(dt)
 	end
 
 	bubbleBarDisplay = math.lerp(bubbleBarDisplay, bubbleBar, .05)
-
-	fx.pulse:send('mx', love.mouse.getX())
-	fx.pulse:send('my', love.mouse.getY())
 end
 
 function love.draw()
 	love.graphics.reset()
+
+	if tangoing > 0 then
+		love.graphics.push()
+		love.graphics.translate(-20 + math.random() * 40, -20 + math.random() * 40)
+	end
 
 	love.graphics.setPixelEffect( fx.pulse )
 	love.graphics.setColor(255, 255, 255, 50)
@@ -160,6 +162,10 @@ function love.draw()
 
 	love.graphics.setColor(255, 255, 255, 160)
 	love.graphics.draw(water, 0, 0)
+
+	if tangoing > 0 then
+		love.graphics.pop()
+	end
 end
 
 function love.gameover()

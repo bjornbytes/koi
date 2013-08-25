@@ -9,8 +9,6 @@ fx.pulse = love.graphics.newPixelEffect[[
 
 extern number time		= 0.0;
 extern vec2 resolution	= vec2(1280,800);
-extern number mx = 0;
-extern number my = 0;
 uniform sampler2D tex0;
 vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords)
 
