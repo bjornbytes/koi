@@ -48,30 +48,6 @@ function Bubble:update()
 		puffer.lastBubble = 0
 	end
 
-	if sucking > 0 then
-		local closest = koi1
-		if math.distance(self.x, self.y, koi2.x, koi2.y) < math.distance(self.x, self.y, koi1.x, koi1.y) then
-			closest = koi2
-		end
-
-		local dir = math.direction(self.x, self.y, closest.x, closest.y)
-		local dis = math.distance(self.x, self.y, closest.x, closest.y)
-		self.speed = (100000 / dis)
-		self.angle = dir
-	elseif blowing > 0 then
-		local closest = koi1
-		if math.distance(self.x, self.y, koi2.x, koi2.y) < math.distance(self.x, self.y, koi1.x, koi1.y) then
-			closest = koi2
-		end
-
-		local dir = math.direction(self.x, self.y, closest.x, closest.y) + math.pi
-		local dis = math.distance(self.x, self.y, closest.x, closest.y)
-		self.speed = (100000 / dis)
-		self.angle = dir
-	else
-		self.speed = math.max(self.speed - 100 * delta, 0)
-	end
-
 	self.x = self.x + math.cos(self.angle) * self.speed * delta
 	self.y = self.y + math.sin(self.angle) * self.speed * delta
 
@@ -94,4 +70,43 @@ function Bubble:draw()
 
 	love.graphics.setColor(255, 255, 255)
 	love.graphics.draw(sprBubble, self.x, self.y, 0, scale, scale, sprBubble:getWidth() / 2 + 1, sprBubble:getHeight() / 2 + 1)
+end
+
+RainbowSex = {}
+
+rainbowSexes = {}
+
+function RainbowSex.create(x, y)
+	local rsex = {
+		id = #rainbowSexes + 1,
+		x = x,
+		y = y,
+	}
+
+	rsex.r, rsex.g, rsex.b = HSV((math.random() * 255), 255, 255)
+	rsex.hp = math.random() * .5
+	rsex.maxHp = rsex.hp
+	rsex.dir = math.random() * math.pi * 2
+	rsex.len = 100 + math.random() * 300
+
+	setmetatable(rsex, {__index = RainbowSex})
+
+	rainbowSexes[rsex.id] = rsex
+
+	return rsex
+end
+
+function RainbowSex:update()
+	self.x = math.lerp(self.x, self.x + math.cos(self.dir) * self.len, .05)
+	self.y = math.lerp(self.y, self.y + math.sin(self.dir) * self.len, .05)
+
+	self.hp = self.hp - delta
+	if self.hp < 0 then
+		rainbowSexes[self.id] = nil
+	end
+end
+
+function RainbowSex:draw()
+	love.graphics.setColor(self.r, self.g, self.b, (self.hp / self.maxHp) * 255)
+	love.graphics.circle('fill', self.x, self.y, 100 * (1 - (self.hp / self.maxHp)))
 end

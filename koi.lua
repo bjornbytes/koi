@@ -53,7 +53,11 @@ function Koi:update()
 	end
 
 	if math.hcoca(self.x, self.y, 30, puffer.x, puffer.y, puffer.size) then
-		love.gameover()
+		if tangoing == 0 then
+			love.gameover()
+		else
+			
+		end
 	end
 
 	if self.id == 1 then
@@ -63,6 +67,27 @@ function Koi:update()
 			self.y = self.y + math.sin(dir) * 1
 			koi2.x = koi2.x + math.cos(dir + math.pi) * 1
 			koi2.y = koi2.y + math.sin(dir + math.pi) * 1
+		end
+	end
+
+	if tangoing > 0 then
+		local distance, direction = 80, tangoing * 30
+
+		if self.id == 1 then
+			self.x = love.mouse.getX() + math.cos(direction) * distance
+			self.y = love.mouse.getY() + math.sin(direction) * distance
+			self.angle = direction - math.pi / 2
+		else
+			self.x = love.mouse.getX() + math.cos(direction + math.pi) * distance
+			self.y = love.mouse.getY() + math.sin(direction + math.pi) * distance
+			self.angle = direction + math.pi / 2
+
+		end
+
+		for i = 1, 10 do
+			local sex = RainbowSex.create()
+			sex.x = self.x
+			sex.y = self.y
 		end
 	end
 end

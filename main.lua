@@ -1,4 +1,5 @@
 require 'util'
+require 'pulse'
 require 'koi'
 require 'puffer'
 require 'shark'
@@ -14,6 +15,8 @@ toUpdate = {
 }
 
 function love.load()
+	gt = 0
+
 	koi1 = Koi.create()
 	koi2 = Koi.create()
 
@@ -55,13 +58,16 @@ function love.load()
 	sharkTimer = 0
 	nextShark = 10
 
-	sucking = 0
-	blowing = 0
-	kinky = true
+	tangoing = 0
+	kinky = false
 end
 
 function love.update(dt)
+	gt = (gt + dt)
+	if gt > 40 then gt = -10 end
 	delta = dt
+
+	fx.pulse:send( "time", gt )
 
 	for _, table in pairs(toUpdate) do
 		for _, inst in pairs(table) do
@@ -93,12 +99,8 @@ function love.update(dt)
 		maxBubbles = maxBubbles + 1
 	end
 
-	if sucking > 0 then
-		sucking = math.max(sucking - delta, 0)
-	end
-
-	if blowing > 0 then
-		blowing = math.max(blowing - delta, 0)
+	if tangoing > 0 then
+		tangoing = math.max(tangoing - delta, 0)
 	end
 
 	sharkTimer = sharkTimer + delta
@@ -109,10 +111,20 @@ function love.update(dt)
 	end
 
 	bubbleBarDisplay = math.lerp(bubbleBarDisplay, bubbleBar, .05)
+
+	fx.pulse:send('mx', love.mouse.getX())
+	fx.pulse:send('my', love.mouse.getY())
 end
 
 function love.draw()
 	love.graphics.reset()
+
+	love.graphics.setPixelEffect( fx.pulse )
+	love.graphics.setColor(255, 255, 255, 50)
+	love.graphics.draw(sandTile, 0, 0)
+	love.graphics.setPixelEffect( )
+
+	love.graphics.setColor(255, 255, 255, 100)
 	love.graphics.draw(sandTile, 0, 0)
 	
 	love.graphics.setColor(0, 0, 200, 128)
@@ -121,6 +133,7 @@ function love.draw()
 	love.graphics.line(love.graphics.getWidth() / 2, 10, love.graphics.getWidth() / 2, 50)
 	love.graphics.rectangle('line', 60, 10, love.graphics.getWidth() - 120, 40)
 
+	love.graphics.setColor(255, 255, 255, 100)
 	love.graphics.draw(water, 0, 0)
 
 	love.graphics.setColor(0, 200, 200, 128)
@@ -139,6 +152,10 @@ function love.draw()
 	
 	for _, shark in pairs(sharks) do
 		shark:draw()
+	end
+
+	for _, sex in pairs(rainbowSexes) do
+		sex:draw()
 	end
 
 	love.graphics.setColor(255, 255, 255, 160)
@@ -170,15 +187,10 @@ function love.restart()
 end
 
 function love.keypressed(key)
-	if key == 'z' then
-		if bubbleBar >= 10 then
-			bubbleBar = bubbleBar - 10
-			sucking = .5
-		end
-	elseif key == 'x' then
+	if key == ' ' then
 		if bubbleBar >= 20 then
 			bubbleBar = bubbleBar - 20
-			blowing = .5
+			tangoing = 5
 		end
 	end
 end

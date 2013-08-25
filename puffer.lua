@@ -72,28 +72,6 @@ function Puffer:update()
 		elseif self.y > love.graphics.getHeight() - self.size then self.y = love.graphics.getHeight() - (self.size + 1) end
 	end
 
-	if sucking > 0 then
-		local closest = koi1
-		if math.distance(self.x, self.y, koi2.x, koi2.y) < math.distance(self.x, self.y, koi1.x, koi1.y) then
-			closest = koi2
-		end
-
-		local dir = math.direction(self.x, self.y, closest.x, closest.y)
-		local dis = math.distance(self.x, self.y, closest.x, closest.y)
-		self.speed = (100000 / dis)
-		self.angle = dir
-	elseif blowing > 0 then
-		local closest = koi1
-		if math.distance(self.x, self.y, koi2.x, koi2.y) < math.distance(self.x, self.y, koi1.x, koi1.y) then
-			closest = koi2
-		end
-
-		local dir = math.direction(self.x, self.y, closest.x, closest.y) + math.pi
-		local dis = math.distance(self.x, self.y, closest.x, closest.y)
-		self.speed = (100000 / dis)
-		self.angle = dir
-	end
-
 	self.displaySize = math.lerp(self.displaySize, self.size, .05)
 end
 
