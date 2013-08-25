@@ -26,6 +26,8 @@ function math.hcoca(x1, y1, r1, x2, y2, r2) -- Hot circle on circle action.
   return (dx * dx) + (dy * dy) < r * r
 end
 
+function math.inside(px, py, rx, ry, rw, rh) return px >= rx and px <= rx + rw and py >= ry and py <= ry + rh end
+
 function HSV(h, s, v)
     if s <= 0 then return v,v,v end
     h, s, v = h/256*6, s/255, v/255
