@@ -27,6 +27,28 @@ fx.pulse = love.graphics.newPixelEffect[[
 
 ]]
 
+fx.menuPulse = love.graphics.newPixelEffect[[
+
+    extern number time      = 0.0;
+    extern vec2 resolution  = vec2(1280,800);
+    uniform sampler2D tex0;
+    vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords)
+    {
+        vec2 halfres    = resolution/2.0;
+        vec2 cPos       = pixel_coords.xy;
+        //cPos.x            -= 0.5*halfres.x*sin(time/2.0)+0.3*halfres.x*cos(time)+halfres.x;
+        //cPos.y            -= 0.4*halfres.y*sin(time/5.0)+0.3*halfres.y*cos(time)+halfres.y;
+        cPos.x          -= halfres.x + 65;//(time * 50);
+        cPos.y          -= 620;
+        float cLength   = length(cPos) / .2;
+        vec2 uv         = (vec2(0, -.54) + pixel_coords/resolution)-(cPos/cLength)*cos(cLength/100.0-time*4.0)/80.0;
+        vec3 col        = texture2D(tex0,uv).xyz*1.2;
+     
+        return vec4( col, 1.0 );
+    }
+
+]]
+
 fx.magnify = love.graphics.newPixelEffect [[
 
     extern Image map;

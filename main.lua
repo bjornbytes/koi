@@ -52,6 +52,9 @@ function love.load()
 	waterLight = love.graphics.newImage('img/waterLight.png')
 	sprBubble = love.graphics.newImage('img/bubble.png')
 
+	sprBandaid1 = love.graphics.newImage('img/bandaid1.png')
+	sprBandaid2 = love.graphics.newImage('img/bandaid2.png')
+
 	gameoverBG = love.graphics.newImage('img/gameoverBG.png')
 	gameoverRestart = love.graphics.newImage('img/gameoverRestart.png')
 	gameoverQuit = love.graphics.newImage('img/gameoverQuit.png')
@@ -111,6 +114,7 @@ function love.load()
 	koi2.angle = math.pi
 
 	puffer = Puffer.create()
+	puffer.x, puffer.y = 640, 400
 
 	bubbleTimer = 0
 	bubbleRate = 0.9
@@ -136,6 +140,9 @@ function love.update(dt)
 	gt = (gt + dt)
 	delta = dt
 
+	fx.pulse:send( "time", gt )
+	fx.menuPulse:send( "time", gt )
+
 	if menu then
 		local x, y = love.mouse.getPosition()
 		if math.inside(x, y, 400, 360, 480, 140) then
@@ -144,10 +151,7 @@ function love.update(dt)
 			menuButtonPlayAlpha = math.max(menuButtonPlayAlpha - delta, .75)
 		end
 
-		return
 	elseif credits then
-		--
-	elseif tutorial then
 		--
 	elseif gameover > 0 then
 		gameover = math.min(gameover + delta * 15, 1)
@@ -173,8 +177,6 @@ function love.update(dt)
 
 		return
 	end
-
-	fx.pulse:send( "time", gt )
 
 	for _, table in pairs(toUpdate) do
 		for _, inst in pairs(table) do
@@ -224,7 +226,13 @@ function love.draw()
 	love.graphics.reset()
 
 	if menu then
+		love.graphics.setPixelEffect(fx.menuPulse)
+		love.graphics.setColor(255, 255, 255, 200)
 		love.graphics.draw(menuBG, 0, 0)
+		love.graphics.setPixelEffect()
+
+		love.graphics.setColor(255, 255, 255, 160)
+		
 
 		love.graphics.setColor(255, 255, 255, 255 * menuButtonPlayAlpha)
 		love.graphics.draw(menuButtonPlay, 0, 0)
@@ -241,6 +249,10 @@ function love.draw()
 			love.graphics.draw(menuButtonQuitHover, 0, 0)
 		else
 			love.graphics.draw(menuButtonQuit, 0, 0)
+		end
+
+		for _, bub in pairs(lilbubbies) do
+			bub:draw()
 		end
 
 		return
@@ -291,7 +303,7 @@ function love.draw()
 	love.graphics.setColor(255, 255, 255, 100)
 	love.graphics.draw(water, 0, 0)
 
-	if tutorial or menu then
+	if tutorial then
 		for _, bub in pairs(lilbubbies) do
 			bub:draw()
 		end
@@ -357,13 +369,19 @@ function love.restart()
 	love.audio.stop(gameoverSound)
 	love.audio.rewind(gameoverSound)
 	
-	love.audio.resume(backgroundSound)
+	if menu then
+		love.audio.resume(backgroundSound)
+		love.audio.stop(gameoverSound)
+	end
 
 	koi1.color = {255, 0, 0}
 	koi2.color = {0, 0, 255}
 
 	koi1.x, koi1.y = 64, 64
 	koi2.x, koi2.y = love.graphics.getWidth() - 64, love.graphics.getHeight() - 64
+	puffer.x, puffer.y = 640, 400
+	puffer.angle = math.random(2 * math.pi)
+	puffer.speed = 30
 
 	koi1.speed, koi2.speed = 0, 0
 
@@ -380,10 +398,11 @@ function love.restart()
 		sharks[1] = nil
 	end
 
-	puffer.size = 40
+	puffer.size = 60
 	puffer.baseSpeed = 75
 	puffer.speed = 0
 	puffer.lastBubble = 0
+	puffer.bandaids = {}
 end
 
 function love.keypressed(key)
@@ -433,6 +452,7 @@ function love.mousepressed(x, y, key)
 		if key == 'l' then
 			if math.inside(love.mouse.getX(), love.mouse.getY(), 513, 568, 241, 67) then
 				tutorial = false
+				love.restart()
 				love.audio.play(backgroundSound)
 			end
 		end
