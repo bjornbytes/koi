@@ -226,7 +226,7 @@ function love.update(dt)
 	end
 
 	if tutorial then
-		if math.inside(love.mouse.getX(), love.mouse.getY(), 513, 568, 241, 67) then
+		if math.inside(love.mouse.getX(), love.mouse.getY(), 513, 603, 241, 67) then
 			tutorialButtonAlpha = math.min(tutorialButtonAlpha + delta, 1)
 		else
 			tutorialButtonAlpha = math.max(tutorialButtonAlpha - delta, .75)
@@ -397,7 +397,7 @@ function love.draw()
 		love.graphics.setColor(255, 255, 255, 255)
 		love.graphics.draw(tutorialText, 0, 0)
 		love.graphics.setColor(255, 255, 255, tutorialButtonAlpha * 255)
-		love.graphics.draw(tutorialButton, 0, 0)
+		love.graphics.draw(tutorialButton, 0, 35)
 
 		return
 	end
@@ -582,7 +582,7 @@ function love.mousepressed(x, y, key)
 		end
 	elseif tutorial then
 		if key == 'l' then
-			if math.inside(x, y, 513, 568, 241, 67) then
+			if math.inside(x, y, 513, 603, 241, 67) then
 				tutorial = false
 				love.restart()
 				audio.play(backgroundSound)
