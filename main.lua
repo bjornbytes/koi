@@ -37,7 +37,7 @@ function love.load()
 	puffer = Puffer.create()
 
 	bubbleTimer = 0
-	bubbleRate = 1.1
+	bubbleRate = 0.9
 	nextBubble = .25
 
 	sprKoi = {}
@@ -76,6 +76,7 @@ function love.load()
 	gameoverBG = love.graphics.newImage('img/gameoverBG.png')
 	gameoverRestart = love.graphics.newImage('img/gameoverRestart.png')
 	gameoverQuit = love.graphics.newImage('img/gameoverQuit.png')
+	gameoverText = love.graphics.newImage('img/gameoverText.png')
 
 	for i = 1, 8 do
 		StarFish.create()
@@ -99,7 +100,7 @@ function love.update(dt)
 	delta = dt
 
 	if gameover > 0 then
-		gameover = math.min(gameover + delta * 2, 1)
+		gameover = math.min(gameover + delta * 15, 1)
 	end
 
 	fx.pulse:send( "time", gt )
@@ -177,11 +178,14 @@ function love.draw()
 			y = love.graphics.getHeight() / gameoverBG:getHeight()
 		}
 
+		local random = -2 + math.random() * 7
+
 		love.graphics.setColor(255, 255, 255, (gameover / 1) * 255)
 		love.graphics.draw(gameoverBG, 0, 0, 0, scale.x, scale.y)
 
 		love.graphics.draw(gameoverRestart, 100, 600, 0, scale.x, scale.y)
 		love.graphics.draw(gameoverQuit, 500, 600, 0, scale.x, scale.y)
+		love.graphics.draw(gameoverText, 50 + random, 50 + random, 0, scale.x, scale.y)
 
 		return
 	end
@@ -277,10 +281,15 @@ end
 function love.mousepressed(x, y, key)
 	if gameover > 0 then
 		if key == 'l' then
-			if math.inside(x, y, 100, 600, gameoverRestart:getWidth(), gameoverRestart:getHeight()) then
+			local scale = {
+				x = love.graphics.getWidth() / gameoverBG:getWidth(),
+				y = love.graphics.getHeight() / gameoverBG:getHeight()
+			}
+
+			if math.inside(x, y, 100, 600, gameoverRestart:getWidth() * scale.x, gameoverRestart:getHeight() * scale.y) then
 				gameover = 0
 				love.restart()
-			else math.inside(x, y, 500, 500, gameoverQuit:getWidth(), gameoverQuit:getHeight())
+			elseif math.inside(x, y, 500, 600, gameoverQuit:getWidth() * scale.x, gameoverQuit:getHeight() * scale.y) then
 				love.event.push('quit')
 			end
 		end
