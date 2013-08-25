@@ -84,6 +84,7 @@ function love.load()
 	-- Game States
 	gt = 0
 	gameover = 0
+	win = 0
 	tutorial = false
 
 	-- Game Objects
@@ -130,6 +131,10 @@ function love.update(dt)
 
 	if gameover > 0 then
 		gameover = math.min(gameover + delta * 15, 1)
+	end
+
+	if win > 0 then
+		win = math.min(win + delta * 15, 1)
 	end
 
 	if tutorial then
