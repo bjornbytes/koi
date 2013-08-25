@@ -92,8 +92,9 @@ function Koi:update()
 
 		for i = 1, 2 do
 			local sex = RainbowSex.create()
-			sex.x = self.x
-			sex.y = self.y
+			local d = math.random(2 * math.pi)
+			sex.x = self.x + math.cos(d) * 100
+			sex.y = self.y + math.sin(d) * 100
 		end
 	end
 
@@ -106,7 +107,28 @@ end
 
 function Koi:draw()
 	love.graphics.reset()
-	animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi * 1.5, .8, .8, 64, 64)
+
+	local scale
+	if tangoing > 0 then
+		scale = .8
+		love.graphics.setColor(255, 255, 255, 255)
+		animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi * 1.5, scale, scale, 64, 64)
+		scale = 1.2
+		love.graphics.setColor(255, 255, 255, 200)
+		animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi * 1.5, scale, scale, 64, 64)
+		scale = 1.6
+		love.graphics.setColor(255, 255, 255, 150)
+		animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi * 1.5, scale, scale, 64, 64)
+		scale = 2
+		love.graphics.setColor(255, 255, 255, 100)
+		animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi * 1.5, scale, scale, 64, 64)
+		scale = 2.4
+		love.graphics.setColor(255, 255, 255, 50)
+		animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi * 1.5, scale, scale, 64, 64)
+	else
+		scale = .8
+		animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi * 1.5, scale, scale, 64, 64)
+	end
 
 	if love.keyboard.isDown(' ') then
 		love.graphics.setColor(0, 255, 0)
