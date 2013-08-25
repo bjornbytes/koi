@@ -132,6 +132,8 @@ function Puffer:hurt()
 		self.hp = self.hp - 1
 		if self.hp == 0 then
 			win = .1
+			audio.play(winSound)
+			love.audio.pause(backgroundSound)
 			return
 		end
 

@@ -101,6 +101,20 @@ local loader = coroutine.create(function()
 	pauseResumeButton = love.graphics.newImage('img/buttonResume.png')
 	coroutine.yield(40)
 	pauseResumeButtonHover = love.graphics.newImage('img/buttonResumeHover.png')
+	coroutine.yield(41)
+	winRestartButton = love.graphics.newImage('img/buttonRestartWin.png')
+	coroutine.yield(42)
+	winRestartButtonHover = love.graphics.newImage('img/buttonRestartHover.png')
+	coroutine.yield(43)
+	winQuitButton = love.graphics.newImage('img/buttonQuitWin.png')
+	coroutine.yield(44)
+	winQuitButtonHover = love.graphics.newImage('img/buttonQuitHoverWin.png')
+	coroutine.yield(45)
+	winBackground = love.graphics.newImage('img/winScreen.png')
+	coroutine.yield(46)
+	winScreenText = love.graphics.newImage('img/winScreenText.png')
+	coroutine.yield(47)
+	winSound = love.audio.newSource('sound/win.mp3', 'stream')
 end)
 
 function love.load()
@@ -124,10 +138,10 @@ function love.load()
 			love.graphics.clear()
 			love.graphics.setColor(255, 255, 255, 255)
 			if loadingBG then love.graphics.draw(loadingBG, 0, 0) end
-			love.graphics.setColor(255, 255, 255, (progress / 40) * 255)
-			if sprLogo then love.graphics.draw(sprLogo, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, (progress / 40) * math.pi * 2, 1, 1, 160, 160) end
+			love.graphics.setColor(255, 255, 255, (progress / 47) * 255)
+			if sprLogo then love.graphics.draw(sprLogo, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, (progress / 47) * math.pi * 2, 1, 1, 160, 160) end
 			love.graphics.setColor(255, 255, 255, 60)
-			love.graphics.rectangle('fill', love.graphics.getWidth() / 2 - 200, 600, (progress / 40) * 400, 20)
+			love.graphics.rectangle('fill', love.graphics.getWidth() / 2 - 200, 600, (progress / 47) * 400, 20)
 			love.graphics.setColor(255, 255, 255, 120)
 			love.graphics.rectangle('line', love.graphics.getWidth() / 2 - 201, 599, 402, 22)
 			love.graphics.present()
@@ -222,8 +236,12 @@ function love.update(dt)
 		--
 	elseif gameover > 0 then
 		gameover = math.min(gameover + delta * 15, 1)
+
+		return
 	elseif win > 0 then
 		win = math.min(win + delta * 15, 1)
+
+		return
 	end
 
 	if tutorial then
@@ -357,7 +375,32 @@ function love.draw()
 
 	-- Game State: Win
 	if win > 0 then
-		-- win stuff
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.draw(winBackground, 0, 0)
+
+		love.graphics.setColor(255, 255, 255, 80)
+
+		--love.graphics.rectangle('fill', love.graphics.getWidth() / 2.5 + 3, 650, 337, 96)
+		--love.graphics.rectangle('fill', love.graphics.getWidth() / 2.5 + 363, 650, 337, 96)
+
+		love.graphics.setColor(255, 255, 255, 255)
+
+		local x, y = love.mouse.getPosition()
+
+		if math.inside(x, y, love.graphics.getWidth() / 2.5, 650, 340, 98) then
+			love.graphics.draw(winRestartButtonHover, love.graphics.getWidth() / 2.5, 650)
+		else
+			love.graphics.draw(winRestartButton, love.graphics.getWidth() / 2.5, 650)
+		end
+
+		if math.inside(x, y, love.graphics.getWidth() / 2.5 + 360, 650, 340, 98) then
+			love.graphics.draw(winQuitButtonHover, love.graphics.getWidth() / 2.5 + 360, 650)
+		else
+			love.graphics.draw(winQuitButton, love.graphics.getWidth() / 2.5 + 360, 650)
+		end
+
+		love.graphics.draw(winScreenText, 0, 0)
+
 		return
 	end
 
@@ -521,6 +564,8 @@ function love.restart()
 	puffer.speed = 0
 	puffer.lastBubble = 0
 	puffer.bandaids = {}
+
+	tangoing = 0
 end
 
 function love.keypressed(key)
@@ -598,6 +643,18 @@ function love.mousepressed(x, y, key)
 			elseif math.inside(x, y, 470, 440, 340, 100) then
 				menu = true
 				paused = false
+				love.restart()
+			end
+		end
+	elseif win then
+		if key == 'l' then
+			-- Restart
+			if math.inside(x, y, love.graphics.getWidth() / 2.5, 650, 340, 98) then
+				win = 0
+				love.restart()
+			elseif math.inside(x, y, love.graphics.getWidth() / 2.5 + 360, 650, 340, 98) then
+				win = 0
+				menu = true
 				love.restart()
 			end
 		end
