@@ -302,6 +302,9 @@ end
 function love.keypressed(key)
 	if key == ' ' then
 		if bubbleBar >= bubbleBarMax then
+			love.audio.pause(bubbleBarSound)
+			love.audio.rewind(bubbleBarSound)
+			
 			bubbleBar = bubbleBar - bubbleBarMax
 			tangoing = 3
 			bubbleBarMax = bubbleBarMax + 15

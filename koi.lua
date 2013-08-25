@@ -30,27 +30,25 @@ function Koi:update()
 		self.angle = self.angle + diff * delta * (math.distance(self.x, self.y, x, y) * .1)
 	end
 
-	if love.mouse.isDown('l') and math.distance(self.x, self.y, x, y) > 60 then
-		self.speed = math.min(self.speed + 500 * delta, 500)
-		self.angleSwitch = self.angleSwitch + delta
-		if self.angleSwitch < 1 then
-			if self.id == 1 then
-				self.angle = self.angle + 2 * delta
-			else
-				self.angle = self.angle - 2 * delta
-			end
+	-- Start: Movement
+	self.speed = math.min(self.speed + 500 * delta, 500)
+	self.angleSwitch = self.angleSwitch + delta
+	if self.angleSwitch < 1 then
+		if self.id == 1 then
+			self.angle = self.angle + 2 * delta
 		else
-			if self.id == 1 then
-				self.angle = self.angle - 2 * delta
-			else
-				self.angle = self.angle + 2 * delta
-			end
+			self.angle = self.angle - 2 * delta
 		end
-
-		if self.angleSwitch > 2 then self.angleSwitch = 0 end
 	else
-		self.speed = math.max(self.speed - 500 * delta, 50)
+		if self.id == 1 then
+			self.angle = self.angle - 2 * delta
+		else
+			self.angle = self.angle + 2 * delta
+		end
 	end
+
+	if self.angleSwitch > 2 then self.angleSwitch = 0 end
+	-- End: Movement
 
 	if math.hcoca(self.x, self.y, 30, puffer.x, puffer.y, puffer.size) then
 		if tangoing == 0 then
