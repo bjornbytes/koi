@@ -179,6 +179,11 @@ function love.update(dt)
 		end
 
 		return
+	else
+		if math.random() < .05 then
+			local bubby = LilBubby.create(math.random(0, love.graphics.getWidth()), love.graphics.getHeight())
+			bubby.hp, bubby.maxHp = 10, 10
+		end
 	end
 
 	for _, table in pairs(toUpdate) do
@@ -233,9 +238,6 @@ function love.draw()
 		love.graphics.setColor(255, 255, 255, 200)
 		love.graphics.draw(menuBG, 0, 0)
 		love.graphics.setPixelEffect()
-
-		love.graphics.setColor(255, 255, 255, 160)
-		
 
 		love.graphics.setColor(255, 255, 255, 255 * menuButtonPlayAlpha)
 		love.graphics.draw(menuButtonPlay, 0, 0)
@@ -406,6 +408,7 @@ function love.restart()
 		sharks[1] = nil
 	end
 
+	puffer.hp = 5
 	puffer.size = 60
 	puffer.baseSpeed = 75
 	puffer.speed = 0
