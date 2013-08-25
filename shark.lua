@@ -40,5 +40,5 @@ end
 
 function Shark:draw()
 	love.graphics.reset()
-	love.graphics.draw(self.sprite, self.x, self.y, 0, self.scale * .5, .5, 970, 920)
+	animShark:draw(self.x, self.y, 0, self.scale * .5, .5, 670, 400)
 end
