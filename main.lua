@@ -102,6 +102,7 @@ function love.load()
 	-- Game States
 	gt = 0
 	gameover = 0
+	win = 0
 	menu = true
 	tutorial = false
 	credits = false
@@ -150,6 +151,7 @@ function love.load()
 
 	-- Game Assets: Audio
 	love.audio.play(aquariumSound)
+	paused = false
 
 	-- Game Objects
 	koi1 = Koi.create()
@@ -193,6 +195,10 @@ function love.update(dt)
 	gt = (gt + dt)
 	delta = dt
 
+	if paused then
+		return
+	end
+
 	fx.pulse:send( "time", gt )
 	fx.menuPulse:send( "time", gt )
 
@@ -208,6 +214,8 @@ function love.update(dt)
 		--
 	elseif gameover > 0 then
 		gameover = math.min(gameover + delta * 15, 1)
+	elseif win > 0 then
+		win = math.min(win + delta * 15, 1)
 	end
 
 	if tutorial then
@@ -218,7 +226,7 @@ function love.update(dt)
 		end
 	end
 
-	if tutorial or menu then
+	if tutorial or menu or credits then
 		if math.random() < .5 then
 			local bubby = LilBubby.create(math.random(0, love.graphics.getWidth()), love.graphics.getHeight())
 			bubby.hp, bubby.maxHp = 10, 10
@@ -311,6 +319,13 @@ function love.draw()
 		end
 
 		return
+	elseif credits then
+		love.graphics.setPixelEffect(fx.menuPulse)
+		love.graphics.setColor(255, 255, 255, 200)
+		love.graphics.draw(menuBG, 0, 0)
+		love.graphics.setPixelEffect()
+
+		return
 	end
 
 	-- Game State: Gameover
@@ -329,6 +344,12 @@ function love.draw()
 		love.graphics.draw(gameoverQuit, 500, 600, 0, scale.x, scale.y)
 		love.graphics.draw(gameoverText, 50 + random, 50 + random, 0, scale.x, scale.y)
 
+		return
+	end
+
+	-- Game State: Win
+	if win > 0 then
+		-- win stuff
 		return
 	end
 
@@ -414,7 +435,7 @@ end
 function love.gameover()
 	if gameover == 0 then
 		love.audio.pause(backgroundSound)
-		love.audio.play(gameoverSound)
+		audio.play(gameoverSound)
 
 		gameover = .1
 	end
@@ -468,17 +489,31 @@ function love.restart()
 end
 
 function love.keypressed(key)
-	if key == ' ' then
+	if key == ' ' and not paused then
 		if bubbleBar >= bubbleBarMax then
 			love.audio.pause(bubbleBarSound)
 			love.audio.rewind(bubbleBarSound)
 
-			love.audio.play(rainbowSexSound)
+			audio.play(rainbowSexSound)
 
 			bubbleBar = bubbleBar - bubbleBarMax
 			tangoing = 3
 			bubbleBarMax = bubbleBarMax + 15
 		end
+	elseif key == 'm' then
+		muted = not muted
+
+		if muted then
+			love.audio.pause()
+		else
+			if not menu then
+				love.audio.resume(backgroundSound)
+			end
+			
+			love.audio.resume(aquariumSound)
+		end
+	elseif (key == 'p' or key == 'escape') and (not menu and not tutorial and not credits) then
+		paused = not paused
 	end
 end
 
@@ -515,7 +550,7 @@ function love.mousepressed(x, y, key)
 			if math.inside(love.mouse.getX(), love.mouse.getY(), 513, 568, 241, 67) then
 				tutorial = false
 				love.restart()
-				love.audio.play(backgroundSound)
+				audio.play(backgroundSound)
 			end
 		end
 	end 

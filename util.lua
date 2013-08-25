@@ -1,3 +1,12 @@
+audio = {}
+
+function audio.play(sound)
+  if muted then return
+  else
+    love.audio.play(sound)
+  end
+end
+
 function math.lerp(x, y, z)
 	return x + (y - x) * z
 end
