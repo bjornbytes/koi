@@ -40,7 +40,7 @@ end
 
 function Shark:draw()
 	love.graphics.reset()
-	animShark:draw(self.x, self.y, 0, self.scale * .5, .5, 670, 400)
+	animShark:draw(self.x, self.y, 0, self.scale * .5, .5, 900, 240)
 
 	if love.keyboard.isDown(' ') then
 		love.graphics.setColor(255, 255, 0)
