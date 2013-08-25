@@ -113,7 +113,7 @@ function Puffer:hurt()
 	self.speed = 800
 
 	if self.lastHurt > 5 then
-		bubbleRate = bubbleRate - .2
+		bubbleRate = bubbleRate - 0.035 * (self.hp)
 
 		self.hp = self.hp - 1
 		self.lastHurt = 0

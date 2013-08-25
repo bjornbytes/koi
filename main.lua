@@ -35,7 +35,7 @@ function love.load()
 	puffer = Puffer.create()
 
 	bubbleTimer = 0
-	bubbleRate = 1.25
+	bubbleRate = 1.1
 	nextBubble = .25
 
 	sprKoi = {}
@@ -68,7 +68,7 @@ function love.load()
 	end
 
 	bubbleBar = 0
-	bubbleBarMax = 20
+	bubbleBarMax = 10
 	bubbleBarDisplay = 0
 
 	sharkTimer = 0
@@ -99,7 +99,7 @@ function love.update(dt)
 		Bubble.create()
 
 		bubbleTimer = 0
-		nextBubble = math.max(bubbleRate - .5 + math.random() * .5, 0)
+		nextBubble = math.max(bubbleRate - .1 + math.random() * .1, 0)
 	end
 
 	animKoi[1].update(animKoi[1], dt)
@@ -216,7 +216,7 @@ function love.keypressed(key)
 		if bubbleBar >= bubbleBarMax then
 			bubbleBar = bubbleBar - bubbleBarMax
 			tangoing = 3
-			bubbleBarMax = bubbleBarMax + 20
+			bubbleBarMax = bubbleBarMax + 15
 		end
 	end
 end

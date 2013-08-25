@@ -41,4 +41,9 @@ end
 function Shark:draw()
 	love.graphics.reset()
 	animShark:draw(self.x, self.y, 0, self.scale * .5, .5, 670, 400)
+
+	if love.keyboard.isDown(' ') then
+		love.graphics.setColor(255, 255, 0)
+		love.graphics.circle('line', self.x + 100 * self.scale, self.y, 100)
+	end
 end

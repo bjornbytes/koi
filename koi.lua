@@ -60,6 +60,12 @@ function Koi:update()
 		end
 	end
 
+	if #sharks > 0 then
+		if math.hcoca(self.x, self.y, 30, sharks[1].x + 100 * sharks[1].scale, sharks[1].y, 100) then
+			love.gameover()
+		end
+	end
+
 	if self.id == 1 then
 		while math.hcoca(self.x, self.y, 30, koi2.x, koi2.y, 30) do
 			local dir = math.direction(self.x, self.y, koi2.x, koi2.y) + math.pi
