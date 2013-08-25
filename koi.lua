@@ -11,7 +11,8 @@ function Koi.create()
 		speed = 0,
 		sexy = false,
 		color = {255, 255, 255},
-		angleSwitch = 0
+		angleSwitch = 0,
+		grace = 0
 	}
 
 	setmetatable(koi, {__index = Koi})
@@ -51,7 +52,7 @@ function Koi:update()
 	-- End: Movement
 
 	if math.hcoca(self.x, self.y, 30, puffer.x, puffer.y, puffer.size) then
-		if tangoing == 0 then
+		if tangoing == 0 and self.grace == 0 then
 			love.gameover()
 		else
 			puffer:hurt()
@@ -59,7 +60,7 @@ function Koi:update()
 	end
 
 	if #sharks > 0 then
-		if math.hcoca(self.x, self.y, 30, sharks[1].x + 100 * sharks[1].scale, sharks[1].y, 100) then
+		if math.hcoca(self.x, self.y, 30, sharks[1].x + 100 * sharks[1].scale, sharks[1].y, 100) and self.grace == 0 then
 			love.gameover()
 		end
 	end
@@ -94,7 +95,11 @@ function Koi:update()
 			sex.x = self.x + math.cos(d) * 200
 			sex.y = self.y + math.sin(d) * 200
 		end
+
+		self.grace = 1
 	end
+
+	self.grace = math.max(self.grace - delta, 0)
 
 	if math.random() < self.speed / 750 then
 		local l = LilBubby.create()
@@ -125,6 +130,11 @@ function Koi:draw()
 		animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi * 1.5, scale, scale, 64, 64)
 	else
 		scale = .8
+		local alpha = 1
+		if self.grace > 0 then
+			alpha = math.floor(2 * math.cos(30 * self.grace))
+		end
+		love.graphics.setColor(255, 255, 255, alpha * 255)
 		animKoi[self.id].draw(animKoi[self.id], self.x, self.y, self.angle + math.pi * 1.5, scale, scale, 64, 64)
 	end
 

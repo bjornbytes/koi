@@ -600,6 +600,7 @@ function love.restart()
 
 	koi1.color = {255, 0, 0}
 	koi2.color = {0, 0, 255}
+	koi1.grace, koi2.grace = 0, 0
 
 	koi1.x, koi1.y = 64, 64
 	koi2.x, koi2.y = love.graphics.getWidth() - 64, love.graphics.getHeight() - 64
@@ -647,7 +648,7 @@ function love.keypressed(key)
 			audio.play(rainbowSexSound)
 
 			bubbleBar = bubbleBar - bubbleBarMax
-			tangoing = 3
+			tangoing = 4
 			bubbleBarMax = bubbleBarMax + 15
 		end
 	elseif key == 'm' then
