@@ -96,7 +96,7 @@ function Puffer:draw()
 	local scale = 3.5 * self.displaySize / self.sprite:getWidth()
 	local scaleSign = -1
 	if self.angle % (2 * math.pi) > 1.5 * math.pi or self.angle % (2 * math.pi) < .5 * math.pi then scaleSign = 1 end
-
+	animTail:draw(self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
 	animHead:draw(self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
 	animFins:draw(self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
 

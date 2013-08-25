@@ -46,11 +46,14 @@ function love.load()
 	animKoi[1] = newAnimation(sprKoi[1], 128, 128, 0.1, 0)
 	animKoi[2] = newAnimation(sprKoi[2], 128, 128, 0.1, 0)
 
+	sprTail = love.graphics.newImage('img/pufferTail.png')
 	sprFins = love.graphics.newImage('img/pufferFins.png')
 	sprHead = love.graphics.newImage('img/pufferHead.png')
 	animFins = newAnimation(sprFins, 1600, 1600, .15, 0)
+	animTail = newAnimation(sprTail, 1600, 1600, .15, 0)
 	animHead = newAnimation(sprHead, 1600, 1600, .1, 0)
-	animHead:setMode('bounce')
+	animFins:setMode('bounce')
+	animTail:setMode('bounce')
 
 	sandTile = love.graphics.newImage('img/sandTile.png')
 	water = love.graphics.newImage('img/water.png')
@@ -101,6 +104,7 @@ function love.update(dt)
 	animKoi[1].update(animKoi[1], dt)
 	animKoi[2].update(animKoi[2], dt)
 	animFins:update(dt)
+	animTail:update(dt)
 
 	bubbleTimer = bubbleTimer + delta
 
