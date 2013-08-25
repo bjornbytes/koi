@@ -1,6 +1,6 @@
 require 'util'
 require 'pulse'
-require 'starfish'
+require 'scenery'
 require 'koi'
 require 'puffer'
 require 'shark'
@@ -58,8 +58,9 @@ function love.load()
 	sprBubble = love.graphics.newImage('img/bubble.png')
 	sprShark = love.graphics.newImage('img/pufferFish.png')
 
-	for i = 1, 6 do
+	for i = 1, 8 do
 		StarFish.create()
+		Seaweed.create()
 	end
 
 	bubbleBar = 0
@@ -133,6 +134,11 @@ function love.draw()
 	love.graphics.setColor(255, 255, 255, 60)
 	for _, sf in pairs(starfish) do
 		sf:draw()
+	end
+
+	love.graphics.setColor(255, 255, 255, 100)
+	for _, sw in pairs(seaweed) do
+		sw:draw()
 	end
 
 
