@@ -57,6 +57,14 @@ function love.load()
 	gameoverQuit = love.graphics.newImage('img/gameoverQuit.png')
 	gameoverText = love.graphics.newImage('img/gameoverText.png')
 
+	menuBG = love.graphics.newImage('img/menuBG.png')
+	menuButtonPlay = love.graphics.newImage('img/buttonPlayHover.png')
+	menuButtonPlayAlpha = .8
+	menuButtonCredits = love.graphics.newImage('img/buttonCredits.png')
+	menuButtonCreditsHover = love.graphics.newImage('img/buttonCreditsHover.png')
+	menuButtonQuit = love.graphics.newImage('img/buttonQuit.png')
+	menuButtonQuitHover = love.graphics.newImage('img/buttonQuitHover.png')
+
 	-- Game Assets: Audio
 	backgroundSound = love.audio.newSource('sound/backgroundMusic.mp3', 'stream')
 	aquariumSound = love.audio.newSource('sound/aquarium.mp3', 'stream')
@@ -73,12 +81,14 @@ function love.load()
 		love.audio.newSource('sound/bubbles/pop8.mp3', 'stream')
 	}
 
-	love.audio.play(backgroundSound)
 	love.audio.play(aquariumSound)
 
 	-- Game States
 	gt = 0
 	gameover = 0
+	menu = true
+	tutorial = false
+	credits = false
 
 	-- Game Objects
 	koi1 = Koi.create()
@@ -115,14 +125,26 @@ function love.load()
 
 	tangoing = 0
 	kinky = false
-
 end
 
 function love.update(dt)
 	gt = (gt + dt)
 	delta = dt
 
-	if gameover > 0 then
+	if menu then
+		local x, y = love.mouse.getPosition()
+		if math.inside(x, y, 400, 360, 480, 140) then
+			menuButtonPlayAlpha = math.min(menuButtonPlayAlpha + delta, 1)
+		else
+			menuButtonPlayAlpha = math.max(menuButtonPlayAlpha - delta, .75)
+		end
+
+		return
+	elseif credits then
+		--
+	elseif tutorial then
+		--
+	elseif gameover > 0 then
 		gameover = math.min(gameover + delta * 15, 1)
 	end
 
@@ -174,6 +196,29 @@ end
 
 function love.draw()
 	love.graphics.reset()
+
+	if menu then
+		love.graphics.draw(menuBG, 0, 0)
+
+		love.graphics.setColor(255, 255, 255, 255 * menuButtonPlayAlpha)
+		love.graphics.draw(menuButtonPlay, 0, 0)
+		love.graphics.setColor(255, 255, 255, 255)
+
+		local x, y = love.mouse.getPosition()
+		if math.inside(x, y, 470, 515, 340, 100) then
+			love.graphics.draw(menuButtonCreditsHover, 0, 0)
+		else
+			love.graphics.draw(menuButtonCredits, 0, 0)
+		end
+
+		if math.inside(x, y, 470, 640, 340, 100) then
+			love.graphics.draw(menuButtonQuitHover, 0, 0)
+		else
+			love.graphics.draw(menuButtonQuit, 0, 0)
+		end
+
+		return
+	end
 
 	-- Game State: Gameover
 	if gameover > 0 then
@@ -310,7 +355,19 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y, key)
-	if gameover > 0 then
+	if menu then
+		if math.inside(x, y, 400, 360, 480, 140) then
+			tutorial = true
+			menu = false
+		elseif math.inside(x, y, 470, 515, 340, 100) then
+			credits = true
+			menu = false
+		elseif math.inside(x, y, 470, 640, 340, 100) then
+			love.event.push('quit')
+		end
+	elseif credits then
+		--
+	elseif gameover > 0 then
 		if key == 'l' then
 			local scale = {
 				x = love.graphics.getWidth() / gameoverBG:getWidth(),

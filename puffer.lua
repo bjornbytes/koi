@@ -12,7 +12,8 @@ function Puffer.create()
 		baseSpeed = 75,
 		lastBubble = 0,
 		sprite = love.graphics.newImage('img/pufferFish.png'),
-		lastHurt = 0
+		lastHurt = 0,
+		bandaids = {}
 	}
 
 	setmetatable(puffer, {__index = Puffer})
@@ -123,7 +124,9 @@ function Puffer:hurt()
 
 		self.hp = self.hp - 1
 		self.lastHurt = 0
-		self.size = self.size * 0.5
+		if self.size > 40 then
+			self.size = self.size * 0.5
+		end
 		self.baseSpeed = self.baseSpeed + 50
 	end
 end
