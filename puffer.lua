@@ -88,7 +88,7 @@ end
 
 function Puffer:draw()
 	if self.lastBubble > 6 then
-		love.graphics.setColor(HSV(0, math.min(255 - ((10 - self.lastBubble) / 4) * 255, 255), 255))
+		love.graphics.setColor(HSV(0, math.min(128 - ((12 - self.lastBubble) / 6) * 128, 128), 255))
 	else
 		love.graphics.setColor(255, 255, 255)
 	end
