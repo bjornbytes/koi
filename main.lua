@@ -18,6 +18,7 @@ toUpdate = {
 
 sprKoi = {}
 local loader = coroutine.create(function()
+	loadingBG = love.graphics.newImage('img/loadingBG.png')
 	menuBG = love.graphics.newImage('img/menuBG.png')
 	coroutine.yield(1)
 	sprLogo = love.graphics.newImage('img/logo.png')
@@ -121,8 +122,8 @@ function love.load()
         love.handlers[e](a, b, c, d)
       end
 			love.graphics.clear()
-			love.graphics.setColor(0, 62, 116, 255)
-			love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+			love.graphics.setColor(255, 255, 255, 255)
+			if loadingBG then love.graphics.draw(loadingBG, 0, 0) end
 			love.graphics.setColor(255, 255, 255, (progress / 40) * 255)
 			if sprLogo then love.graphics.draw(sprLogo, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, (progress / 40) * math.pi * 2, 1, 1, 160, 160) end
 			love.graphics.setColor(255, 255, 255, 60)
