@@ -186,7 +186,8 @@ function love.draw()
 end
 
 function love.gameover()
-	love.restart()
+	love.graphics.draw(gameover, 0, 0)
+	-- love.restart()
 end
 
 function love.restart()
@@ -205,10 +206,16 @@ function love.restart()
 	bubbleTimer = 0
 	bubbleRate = 2
 	bubbleBar = 0
+	bubbleBarMax = 10
+
+	if #sharks > 0 then
+		sharks[1] = nil
+	end
 
 	puffer.size = 40
 	puffer.baseSpeed = 75
 	puffer.speed = 0
+	puffer.lastBubble = 0
 end
 
 function love.keypressed(key)
