@@ -34,6 +34,10 @@ function Puffer:update()
     if minidx then
     	if self.speed < 75 then self.speed = self.speed + 10 * delta end
     	self.angle = math.anglerp(self.angle, math.direction(self.x, self.y, bubbles[minidx].x, bubbles[minidx].y), .025)
+    	if mindis < 200 then animHead:seek(4)
+		elseif mindis < 300 then animHead:seek(3)
+		elseif mindis < 400 then animHead:seek(2)
+		else animHead:seek(1) end
     else
     	self.speed = math.max(self.speed - 10 * delta, 0)
     end
@@ -81,7 +85,9 @@ function Puffer:draw()
 	local scale = 3.5 * self.displaySize / self.sprite:getWidth()
 	local scaleSign = -1
 	if self.angle % (2 * math.pi) > 1.5 * math.pi or self.angle % (2 * math.pi) < .5 * math.pi then scaleSign = 1 end
-	love.graphics.draw(self.sprite, self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
+	--love.graphics.draw(sprHead, self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
+	animHead:draw(self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
+	animFins:draw(self.x, self.y, 0, scale * scaleSign, scale, 970, 920)
 
 	if love.keyboard.isDown(' ') then
 		love.graphics.setColor(255, 0, 0)
