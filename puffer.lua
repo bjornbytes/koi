@@ -38,9 +38,9 @@ function Puffer:update()
     if minidx then
     	if self.speed < self.baseSpeed then self.speed = self.speed + 10 * delta end
     	self.angle = math.anglerp(self.angle, math.direction(self.x, self.y, bubbles[minidx].x, bubbles[minidx].y), .025)
-    	if mindis < 200 then animHead:seek(4)
-		elseif mindis < 300 then animHead:seek(3)
-		elseif mindis < 400 then animHead:seek(2)
+    	if mindis < 150 + self.size then animHead:seek(4)
+		elseif mindis < 250 + self.size then animHead:seek(3)
+		elseif mindis < 350 + self.size then animHead:seek(2)
 		else animHead:seek(1) end
     else
     	self.speed = math.max(self.speed - 10 * delta, 0)
@@ -131,15 +131,14 @@ function Puffer:hurt()
 
 		self.hp = self.hp - 1
 		if self.hp == 0 then
-			-- win.
 			win = .1
 			return
 		end
 
 		table.insert(self.bandaids, {
 			idx = math.random(1, 2),
-			offsetx = -400 + math.random() * 400,
-			offsety = -400 + math.random() * 400,
+			offsetx = -400 + math.random() * 800,
+			offsety = -400 + math.random() * 800,
 			angle = math.random(2 * math.pi)
 		})
 		self.lastHurt = 0

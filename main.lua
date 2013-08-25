@@ -168,7 +168,7 @@ function love.update(dt)
 		end
 	end
 
-	if tutorial or menu then
+	if tutorial or menu or credits then
 		if math.random() < .5 then
 			local bubby = LilBubby.create(math.random(0, love.graphics.getWidth()), love.graphics.getHeight())
 			bubby.hp, bubby.maxHp = 10, 10
@@ -261,6 +261,13 @@ function love.draw()
 		end
 
 		return
+	elseif credits then
+		love.graphics.setPixelEffect(fx.menuPulse)
+		love.graphics.setColor(255, 255, 255, 200)
+		love.graphics.draw(menuBG, 0, 0)
+		love.graphics.setPixelEffect()
+		
+		return
 	end
 
 	-- Game State: Gameover
@@ -285,6 +292,7 @@ function love.draw()
 	-- Game State: Win
 	if win > 0 then
 		-- win stuff
+		return
 	end
 
 	if tangoing > 0 then
