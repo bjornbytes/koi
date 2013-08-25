@@ -54,15 +54,19 @@ function love.load()
 
 	sprShark = love.graphics.newImage('img/shark.png')
 
+	sprBubbyBar = love.graphics.newImage('img/bubbleBar.png')
+
 	animFins = newAnimation(sprFins, 1600, 1600, .15, 0)
 	animTail = newAnimation(sprTail, 1600, 1600, .15, 0)
 	animHead = newAnimation(sprHead, 1600, 1600, .1, 0)
 
 	animShark = newAnimation(sprShark, 1600, 800, .2, 0)
+	animBubbyBar = newAnimation(sprBubbyBar, 1200, 200, .075, 0)
 
 	animFins:setMode('bounce')
 	animTail:setMode('bounce')
 	animShark:setMode('bounce')
+	animBubbyBar:setMode('bounce')
 
 	sandTile = love.graphics.newImage('img/sandTile.png')
 	water = love.graphics.newImage('img/water.png')
@@ -121,7 +125,7 @@ function love.update(dt)
 	animKoi[2].update(animKoi[2], dt)
 	animFins:update(dt)
 	animTail:update(dt)
-	
+	animBubbyBar:update(dt)
 	animShark:update(dt)
 
 	bubbleTimer = bubbleTimer + delta
@@ -138,6 +142,10 @@ function love.update(dt)
 	end
 
 	bubbleBarDisplay = math.lerp(bubbleBarDisplay, bubbleBar, .05)
+
+	if bubbleBar < bubbleBarMax then
+		animBubbyBar:seek(1)
+	end
 end
 
 function love.draw()
@@ -181,12 +189,6 @@ function love.draw()
 	love.graphics.setColor(255, 255, 255, 100)
 	love.graphics.draw(sandTile, 0, 0)
 
-	love.graphics.setColor(0, 0, 200, 128)
-	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBarDisplay / bubbleBarMax), 40)
-	love.graphics.setColor(0, 0, 200, 255)
-	love.graphics.line(love.graphics.getWidth() / 2, 10, love.graphics.getWidth() / 2, 50)
-	love.graphics.rectangle('line', 60, 10, love.graphics.getWidth() - 120, 40)
-
 	love.graphics.setColor(255, 255, 255, 100)
 	love.graphics.draw(water, 0, 0)
 
@@ -212,6 +214,15 @@ function love.draw()
 
 	love.graphics.setColor(255, 255, 255, 160)
 	love.graphics.draw(water, 0, 0)
+
+		love.graphics.setColor(255, 255, 255, 255)
+	animBubbyBar:draw(40, -30)
+
+	local i = 0
+	while i < (1200 - 145) * (bubbleBar / bubbleBarMax) do
+		love.graphics.draw(sprBubble, 100 + i, 70, 0, 25 * 2.2/128, 25 * 2.2/128, sprBubble:getWidth() / 2 + 1, sprBubble:getHeight() / 2 + 1)
+		i = i + 25
+	end
 
 	if tangoing > 0 then
 		love.graphics.pop()
