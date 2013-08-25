@@ -12,7 +12,8 @@ toUpdate = {
 	bubbles,
 	meanBubbles,
 	rainbowSexes,
-	sharks
+	sharks,
+	lilbubbies
 }
 
 function love.load()
@@ -192,6 +193,10 @@ function love.draw()
 	koi1:draw()
 	koi2:draw()
 	puffer:draw()
+
+	for _, bub in pairs(lilbubbies) do
+		bub:draw()
+	end
 
 	for _, bubble in pairs(bubbles) do
 		bubble:draw()

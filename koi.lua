@@ -96,6 +96,12 @@ function Koi:update()
 			sex.y = self.y
 		end
 	end
+
+	if math.random() < self.speed / 750 then
+		local l = LilBubby.create()
+		l.x = self.x - 20 + math.random() * (2 * 20)
+		l.y = self.y - 20 + math.random() * (2 * 20)
+	end
 end
 
 function Koi:draw()
