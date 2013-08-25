@@ -49,6 +49,7 @@ function Bubble:update()
 	if math.hcoca(self.x, self.y, self.size, puffer.x, puffer.y, puffer.size) then
 		self:pop()
 		puffer.size = puffer.size + puffer.hp * 2
+		puffer.size = math.min(puffer.size, 390)
 		puffer.lastBubble = 0
 	end
 

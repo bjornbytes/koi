@@ -103,6 +103,12 @@ local loader = coroutine.create(function()
 	pauseResumeButtonHover = love.graphics.newImage('img/buttonResumeHover.png')
 	coroutine.yield(41)
 	sprMute = love.graphics.newImage('img/sprMute.png')
+	coroutine.yield(42)
+	creditsText = love.graphics.newImage('img/creditsText.png')
+	coroutine.yield(43)
+	backButton = love.graphics.newImage('img/backButton.png')
+	coroutine.yield(44)
+	backButtonHover = love.graphics.newImage('img/backButtonHover.png')
 end)
 
 function love.load()
@@ -126,10 +132,10 @@ function love.load()
 			love.graphics.clear()
 			love.graphics.setColor(255, 255, 255, 255)
 			if loadingBG then love.graphics.draw(loadingBG, 0, 0) end
-			love.graphics.setColor(255, 255, 255, (progress / 41) * 255)
-			if sprLogo then love.graphics.draw(sprLogo, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, (progress / 41) * math.pi * 2, 1, 1, 160, 160) end
+			love.graphics.setColor(255, 255, 255, (progress / 44) * 255)
+			if sprLogo then love.graphics.draw(sprLogo, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, (progress / 44) * math.pi * 2, 1, 1, 160, 160) end
 			love.graphics.setColor(255, 255, 255, 60)
-			love.graphics.rectangle('fill', love.graphics.getWidth() / 2 - 200, 600, (progress / 41) * 400, 20)
+			love.graphics.rectangle('fill', love.graphics.getWidth() / 2 - 200, 600, (progress / 44) * 400, 20)
 			love.graphics.setColor(255, 255, 255, 120)
 			love.graphics.rectangle('line', love.graphics.getWidth() / 2 - 201, 599, 402, 22)
 			love.graphics.present()
@@ -221,7 +227,6 @@ function love.update(dt)
 		else
 			menuButtonPlayAlpha = math.max(menuButtonPlayAlpha - delta, .75)
 		end
-
 	elseif credits then
 		--
 	elseif gameover > 0 then
@@ -341,10 +346,22 @@ function love.draw()
 
 		return
 	elseif credits then
-		love.graphics.setPixelEffect(fx.menuPulse)
-		love.graphics.setColor(255, 255, 255, 200)
-		love.graphics.draw(menuBG, 0, 0)
-		love.graphics.setPixelEffect()
+		love.graphics.setColor(120, 120, 120, 255)
+		love.graphics.draw(loadingBG, 0, 0)
+
+		for _, bub in pairs(lilbubbies) do
+			bub:draw()
+		end
+
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.draw(creditsText, 0, 0)
+
+		local x, y = love.mouse.getPosition()
+		if math.inside(x, y, 1100, 740, 170, 50) then
+			love.graphics.draw(backButtonHover, 1100, 740, 0, .5, .5)
+		else
+			love.graphics.draw(backButton, 1100, 740, 0, .5, .5)
+		end
 
 		love.graphics.setColor(255, 255, 255, 255)
 		love.graphics.draw(sprMute, 2, love.graphics.getHeight() - 2, 0, .5, .5, 0, sprMute:getHeight())
@@ -634,7 +651,10 @@ function love.mousepressed(x, y, key)
 			love.event.push('quit')
 		end
 	elseif credits then
-		--
+		if math.inside(x, y, 1100, 740, 170, 50) then
+			credits = false
+			menu = true
+		end
 	elseif gameover > 0 then
 		if key == 'l' then
 			local scale = {
