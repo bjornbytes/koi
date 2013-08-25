@@ -18,6 +18,7 @@ toUpdate = {
 
 function love.load()
 	gt = 0
+	gameover = 0
 
 	koi1 = Koi.create()
 	koi2 = Koi.create()
@@ -68,6 +69,10 @@ function love.load()
 	waterLight = love.graphics.newImage('img/waterLight.png')
 	sprBubble = love.graphics.newImage('img/bubble.png')
 
+	gameoverBG = love.graphics.newImage('img/gameoverBG.png')
+	gameoverRestart = love.graphics.newImage('img/gameoverRestart.png')
+	gameoverQuit = love.graphics.newImage('img/gameoverQuit.png')
+
 	for i = 1, 8 do
 		StarFish.create()
 		Seaweed.create()
@@ -88,6 +93,10 @@ end
 function love.update(dt)
 	gt = (gt + dt)
 	delta = dt
+
+	if gameover > 0 then
+		gameover = math.min(gameover + delta * 2, 1)
+	end
 
 	fx.pulse:send( "time", gt )
 
@@ -154,11 +163,24 @@ function love.draw()
 		sw:draw()
 	end
 
+	if gameover > 0 then
+		local scale = {
+			x = love.graphics.getWidth() / gameoverBG:getWidth(),
+			y = love.graphics.getHeight() / gameoverBG:getHeight()
+		}
+
+		love.graphics.setColor(255, 255, 255, (gameover / 1) * 255)
+		love.graphics.draw(gameoverBG, 0, 0, 0, scale.x, scale.y)
+
+		love.graphics.draw(gameoverRestart, 100, 600, 0, scale.x, scale.y)
+		love.graphics.draw(gameoverQuit, 500, 600, 0, scale.x, scale.y)
+
+		return
+	end
 
 	love.graphics.setColor(255, 255, 255, 100)
 	love.graphics.draw(sandTile, 0, 0)
 
-	
 	love.graphics.setColor(0, 0, 200, 128)
 	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBarDisplay / bubbleBarMax), 40)
 	love.graphics.setColor(0, 0, 200, 255)
@@ -197,7 +219,10 @@ function love.draw()
 end
 
 function love.gameover()
-	love.restart()
+	if gameover == 0 then
+		gameover = .1
+	end
+	-- love.restart()
 end
 
 function love.restart()
@@ -218,9 +243,14 @@ function love.restart()
 	bubbleBar = 0
 	bubbleBarMax = 10
 
+	if #sharks > 0 then
+		sharks[1] = nil
+	end
+
 	puffer.size = 40
 	puffer.baseSpeed = 75
 	puffer.speed = 0
+	puffer.lastBubble = 0
 end
 
 function love.keypressed(key)
@@ -229,6 +259,19 @@ function love.keypressed(key)
 			bubbleBar = bubbleBar - bubbleBarMax
 			tangoing = 3
 			bubbleBarMax = bubbleBarMax + 15
+		end
+	end
+end
+
+function love.mousepressed(x, y, key)
+	if gameover > 0 then
+		if key == 'l' then
+			if math.inside(x, y, 100, 600, gameoverRestart:getWidth(), gameoverRestart:getHeight()) then
+				gameover = 0
+				love.restart()
+			else math.inside(x, y, 500, 500, gameoverQuit:getWidth(), gameoverQuit:getHeight())
+				love.event.push('quit')
+			end
 		end
 	end
 end
