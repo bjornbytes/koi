@@ -115,6 +115,13 @@ local loader = coroutine.create(function()
 	winScreenText = love.graphics.newImage('img/winScreenText.png')
 	coroutine.yield(47)
 	winSound = love.audio.newSource('sound/win.mp3', 'stream')
+	sprMute = love.graphics.newImage('img/sprMute.png')
+	coroutine.yield(48)
+	creditsText = love.graphics.newImage('img/creditsText.png')
+	coroutine.yield(49)
+	backButton = love.graphics.newImage('img/backButton.png')
+	coroutine.yield(50)
+	backButtonHover = love.graphics.newImage('img/backButtonHover.png')
 end)
 
 function love.load()
@@ -138,10 +145,10 @@ function love.load()
 			love.graphics.clear()
 			love.graphics.setColor(255, 255, 255, 255)
 			if loadingBG then love.graphics.draw(loadingBG, 0, 0) end
-			love.graphics.setColor(255, 255, 255, (progress / 47) * 255)
-			if sprLogo then love.graphics.draw(sprLogo, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, (progress / 47) * math.pi * 2, 1, 1, 160, 160) end
+			love.graphics.setColor(255, 255, 255, (progress / 50) * 255)
+			if sprLogo then love.graphics.draw(sprLogo, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, (progress / 50) * math.pi * 2, 1, 1, 160, 160) end
 			love.graphics.setColor(255, 255, 255, 60)
-			love.graphics.rectangle('fill', love.graphics.getWidth() / 2 - 200, 600, (progress / 47) * 400, 20)
+			love.graphics.rectangle('fill', love.graphics.getWidth() / 2 - 200, 600, (progress / 50) * 400, 20)
 			love.graphics.setColor(255, 255, 255, 120)
 			love.graphics.rectangle('line', love.graphics.getWidth() / 2 - 201, 599, 402, 22)
 			love.graphics.present()
@@ -172,6 +179,8 @@ function love.load()
 	backgroundSound:setLooping(true)
 	aquariumSound:setLooping(true)
 	love.audio.play(aquariumSound)
+	love.audio.play(backgroundSound)
+	love.audio.pause(backgroundSound)
 
 	paused = false
 
@@ -231,7 +240,6 @@ function love.update(dt)
 		else
 			menuButtonPlayAlpha = math.max(menuButtonPlayAlpha - delta, .75)
 		end
-
 	elseif credits then
 		--
 	elseif gameover > 0 then
@@ -344,13 +352,42 @@ function love.draw()
 			bub:draw()
 		end
 
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.draw(sprMute, 2, love.graphics.getHeight() - 2, 0, .5, .5, 0, sprMute:getHeight())
+		if muted then
+			love.graphics.setColor(255, 0, 0, 255)
+			love.graphics.setLineWidth(4)
+			love.graphics.line(10, love.graphics.getHeight() - 10, 56, love.graphics.getHeight() - 56)
+			love.graphics.setColor(255, 255, 255, 255)
+		end
+
 		return
 	elseif credits then
-		love.graphics.setPixelEffect(fx.menuPulse)
-		love.graphics.setColor(255, 255, 255, 200)
-		love.graphics.draw(menuBG, 0, 0)
-		love.graphics.setPixelEffect()
+		love.graphics.setColor(120, 120, 120, 255)
+		love.graphics.draw(loadingBG, 0, 0)
 
+		for _, bub in pairs(lilbubbies) do
+			bub:draw()
+		end
+
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.draw(creditsText, 0, 0)
+
+		local x, y = love.mouse.getPosition()
+		if math.inside(x, y, 1100, 740, 170, 50) then
+			love.graphics.draw(backButtonHover, 1100, 740, 0, .5, .5)
+		else
+			love.graphics.draw(backButton, 1100, 740, 0, .5, .5)
+		end
+
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.draw(sprMute, 2, love.graphics.getHeight() - 2, 0, .5, .5, 0, sprMute:getHeight())
+		if muted then
+			love.graphics.setColor(255, 0, 0, 255)
+			love.graphics.setLineWidth(4)
+			love.graphics.line(10, love.graphics.getHeight() - 10, 56, love.graphics.getHeight() - 56)
+			love.graphics.setColor(255, 255, 255, 255)
+		end
 		return
 	end
 
@@ -370,18 +407,24 @@ function love.draw()
 		love.graphics.draw(gameoverQuit, 500, 600, 0, scale.x, scale.y)
 		love.graphics.draw(gameoverText, 50 + random, 50 + random, 0, scale.x, scale.y)
 
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.draw(sprMute, 2, love.graphics.getHeight() - 2, 0, .5, .5, 0, sprMute:getHeight())
+		if muted then
+			love.graphics.setColor(255, 0, 0, 255)
+			love.graphics.setLineWidth(4)
+			love.graphics.line(10, love.graphics.getHeight() - 10, 56, love.graphics.getHeight() - 56)
+			love.graphics.setColor(255, 255, 255, 255)
+		end
 		return
 	end
 
 	-- Game State: Win
 	if win > 0 then
+
 		love.graphics.setColor(255, 255, 255, 255)
 		love.graphics.draw(winBackground, 0, 0)
 
 		love.graphics.setColor(255, 255, 255, 80)
-
-		--love.graphics.rectangle('fill', love.graphics.getWidth() / 2.5 + 3, 650, 337, 96)
-		--love.graphics.rectangle('fill', love.graphics.getWidth() / 2.5 + 363, 650, 337, 96)
 
 		love.graphics.setColor(255, 255, 255, 255)
 
@@ -400,6 +443,15 @@ function love.draw()
 		end
 
 		love.graphics.draw(winScreenText, 0, 0)
+
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.draw(sprMute, 2, love.graphics.getHeight() - 2, 0, .5, .5, 0, sprMute:getHeight())
+		if muted then
+			love.graphics.setColor(255, 0, 0, 255)
+			love.graphics.setLineWidth(4)
+			love.graphics.line(10, love.graphics.getHeight() - 10, 56, love.graphics.getHeight() - 56)
+			love.graphics.setColor(255, 255, 255, 255)
+		end
 
 		return
 	end
@@ -442,6 +494,15 @@ function love.draw()
 		love.graphics.draw(tutorialText, 0, 0)
 		love.graphics.setColor(255, 255, 255, tutorialButtonAlpha * 255)
 		love.graphics.draw(tutorialButton, 0, 35)
+
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.draw(sprMute, 2, love.graphics.getHeight() - 2, 0, .5, .5, 0, sprMute:getHeight())
+		if muted then
+			love.graphics.setColor(255, 0, 0, 255)
+			love.graphics.setLineWidth(4)
+			love.graphics.line(10, love.graphics.getHeight() - 10, 56, love.graphics.getHeight() - 56)
+			love.graphics.setColor(255, 255, 255, 255)
+		end
 
 		return
 	end
@@ -505,6 +566,15 @@ function love.draw()
 			love.graphics.draw(menuButtonQuit, 0, -200)
 		end
 	end
+
+	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.draw(sprMute, 2, love.graphics.getHeight() - 2, 0, .5, .5, 0, sprMute:getHeight())
+	if muted then
+		love.graphics.setColor(255, 0, 0, 255)
+		love.graphics.setLineWidth(4)
+		love.graphics.line(10, love.graphics.getHeight() - 10, 56, love.graphics.getHeight() - 56)
+		love.graphics.setColor(255, 255, 255, 255)
+	end
 end
 
 function love.gameover()
@@ -522,7 +592,7 @@ function love.restart()
 	
 	if menu then
 		if not muted then love.audio.resume(aquariumSound) end
-		love.audio.stop(backgroundSound)
+		love.audio.pause(backgroundSound)
 		love.audio.stop(gameoverSound)
 	elseif not muted then
 		love.audio.resume(backgroundSound)
@@ -586,7 +656,7 @@ function love.keypressed(key)
 		if muted then
 			love.audio.pause()
 		else
-			if not menu then
+			if not menu and not credits and not tutorial and win == 0 and gameover == 0 then
 				love.audio.resume(backgroundSound)
 			end
 			
@@ -598,6 +668,20 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y, key)
+	if key == 'l' and math.inside(x, y, 2, love.graphics.getHeight() - 66, 64, 64) then
+		muted = not muted
+
+		if muted then
+			love.audio.pause()
+		else
+			if not menu and not credits and not tutorial and win == 0 and gameover == 0 then
+				love.audio.resume(backgroundSound)
+			end
+			
+			love.audio.resume(aquariumSound)
+		end
+	end
+
 	if menu then
 		if math.inside(x, y, 400, 360, 480, 140) then
 			tutorial = true
@@ -609,7 +693,10 @@ function love.mousepressed(x, y, key)
 			love.event.push('quit')
 		end
 	elseif credits then
-		--
+		if math.inside(x, y, 1100, 740, 170, 50) then
+			credits = false
+			menu = true
+		end
 	elseif gameover > 0 then
 		if key == 'l' then
 			local scale = {

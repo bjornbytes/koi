@@ -130,7 +130,7 @@ function Puffer:hurt()
 		bubbleRate = bubbleRate - 0.035 * (self.hp)
 
 		self.hp = self.hp - 1
-		if self.hp == 0 then
+		if self.hp == 4 then
 			win = .1
 			audio.play(winSound)
 			love.audio.pause(backgroundSound)
