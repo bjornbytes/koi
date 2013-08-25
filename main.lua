@@ -17,29 +17,8 @@ toUpdate = {
 }
 
 function love.load()
-	gt = 0
-	gameover = 0
 
-	koi1 = Koi.create()
-	koi2 = Koi.create()
-
-	koi1.color = {255, 0, 0}
-	koi2.color = {0, 0, 255}
-
-	koi1.x, koi1.y = 64, 64
-	koi2.x, koi2.y = love.graphics.getWidth() - 64, love.graphics.getHeight() - 64
-
-	koi1.id, koi2.id = 1, 2
-
-	koi1.angle = 0
-	koi2.angle = math.pi
-
-	puffer = Puffer.create()
-
-	bubbleTimer = 0
-	bubbleRate = 0.9
-	nextBubble = .25
-
+	-- Game Assets: Images and Animations
 	sprKoi = {}
 	sprKoi[1] = love.graphics.newImage('img/blackKoi.png')
 	sprKoi[2] = love.graphics.newImage('img/whiteKoi.png')
@@ -77,6 +56,50 @@ function love.load()
 	gameoverRestart = love.graphics.newImage('img/gameoverRestart.png')
 	gameoverQuit = love.graphics.newImage('img/gameoverQuit.png')
 	gameoverText = love.graphics.newImage('img/gameoverText.png')
+
+	-- Game Assets: Audio
+	backgroundSound = love.audio.newSource('sound/backgroundMusic.mp3', 'stream')
+	aquariumSound = love.audio.newSource('sound/aquarium.mp3', 'stream')
+	gameoverSound = love.audio.newSource('sound/gameoverSound.wav', 'stream')
+	bubbleBarSound = love.audio.newSource('sound/bubbleBar.mp3', 'stream')
+	bubbleSound = {
+		love.audio.newSource('sound/bubbles/pop1.mp3', 'stream'),
+		love.audio.newSource('sound/bubbles/pop2.mp3', 'stream'),
+		love.audio.newSource('sound/bubbles/pop3.mp3', 'stream'),
+		love.audio.newSource('sound/bubbles/pop4.mp3', 'stream'),
+		love.audio.newSource('sound/bubbles/pop5.mp3', 'stream'),
+		love.audio.newSource('sound/bubbles/pop6.mp3', 'stream'),
+		love.audio.newSource('sound/bubbles/pop7.mp3', 'stream'),
+		love.audio.newSource('sound/bubbles/pop8.mp3', 'stream')
+	}
+
+	love.audio.play(backgroundSound)
+	love.audio.play(aquariumSound)
+
+	-- Game States
+	gt = 0
+	gameover = 0
+
+	-- Game Objects
+	koi1 = Koi.create()
+	koi2 = Koi.create()
+
+	koi1.color = {255, 0, 0}
+	koi2.color = {0, 0, 255}
+
+	koi1.x, koi1.y = 64, 64
+	koi2.x, koi2.y = love.graphics.getWidth() - 64, love.graphics.getHeight() - 64
+
+	koi1.id, koi2.id = 1, 2
+
+	koi1.angle = 0
+	koi2.angle = math.pi
+
+	puffer = Puffer.create()
+
+	bubbleTimer = 0
+	bubbleRate = 0.9
+	nextBubble = .25
 
 	for i = 1, 8 do
 		StarFish.create()
@@ -152,6 +175,25 @@ end
 function love.draw()
 	love.graphics.reset()
 
+	-- Game State: Gameover
+	if gameover > 0 then
+		local scale = {
+			x = love.graphics.getWidth() / gameoverBG:getWidth(),
+			y = love.graphics.getHeight() / gameoverBG:getHeight()
+		}
+
+		local random = -2 + math.random() * 7
+
+		love.graphics.setColor(255, 255, 255, (gameover / 1) * 255)
+		love.graphics.draw(gameoverBG, 0, 0, 0, scale.x, scale.y)
+
+		love.graphics.draw(gameoverRestart, 100, 600, 0, scale.x, scale.y)
+		love.graphics.draw(gameoverQuit, 500, 600, 0, scale.x, scale.y)
+		love.graphics.draw(gameoverText, 50 + random, 50 + random, 0, scale.x, scale.y)
+
+		return
+	end
+
 	if tangoing > 0 then
 		love.graphics.push()
 		love.graphics.translate(-20 + math.random() * 40, -20 + math.random() * 40)
@@ -170,24 +212,6 @@ function love.draw()
 	love.graphics.setColor(255, 255, 255, 100)
 	for _, sw in pairs(seaweed) do
 		sw:draw()
-	end
-
-	if gameover > 0 then
-		local scale = {
-			x = love.graphics.getWidth() / gameoverBG:getWidth(),
-			y = love.graphics.getHeight() / gameoverBG:getHeight()
-		}
-
-		local random = -2 + math.random() * 7
-
-		love.graphics.setColor(255, 255, 255, (gameover / 1) * 255)
-		love.graphics.draw(gameoverBG, 0, 0, 0, scale.x, scale.y)
-
-		love.graphics.draw(gameoverRestart, 100, 600, 0, scale.x, scale.y)
-		love.graphics.draw(gameoverQuit, 500, 600, 0, scale.x, scale.y)
-		love.graphics.draw(gameoverText, 50 + random, 50 + random, 0, scale.x, scale.y)
-
-		return
 	end
 
 	love.graphics.setColor(255, 255, 255, 100)
@@ -219,7 +243,7 @@ function love.draw()
 	love.graphics.setColor(255, 255, 255, 160)
 	love.graphics.draw(water, 0, 0)
 
-		love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setColor(255, 255, 255, 255)
 	animBubbyBar:draw(40, -30)
 
 	local i = 0
@@ -235,12 +259,19 @@ end
 
 function love.gameover()
 	if gameover == 0 then
+		love.audio.pause(backgroundSound)
+		love.audio.play(gameoverSound)
+
 		gameover = .1
 	end
-	-- love.restart()
 end
 
 function love.restart()
+	love.audio.stop(gameoverSound)
+	love.audio.rewind(gameoverSound)
+	
+	love.audio.resume(backgroundSound)
+
 	koi1.color = {255, 0, 0}
 	koi2.color = {0, 0, 255}
 

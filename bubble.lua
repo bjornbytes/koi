@@ -40,6 +40,10 @@ function Bubble:update()
 	if math.hcoca(self.x, self.y, self.size, koi1.x, koi1.y, 50) or math.hcoca(self.x, self.y, self.size, koi2.x, koi2.y, 50) then
 		self:pop()
 		bubbleBar = math.min(bubbleBar + 1, bubbleBarMax)
+
+		if bubbleBar == bubbleBarMax then
+			love.audio.play(bubbleBarSound)
+		end
 	end
 
 	if math.hcoca(self.x, self.y, self.size, puffer.x, puffer.y, puffer.size) then
@@ -58,6 +62,8 @@ end
 
 function Bubble:pop()
 	bubbles[self.id] = nil
+
+	love.audio.play(bubbleSound[math.random(1, #bubbleSound)])
 
 	for _ = 1, 60 do
 		local l = LilBubby.create()
