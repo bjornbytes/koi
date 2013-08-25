@@ -72,9 +72,16 @@ function love.load()
 	tutorialButton = love.graphics.newImage('img/tutorialButton.png')
 	tutorialButtonAlpha = .75
 
+	pauseResumeButton = love.graphics.newImage('img/buttonResume.png')
+	pauseResumeButtonHover = love.graphics.newImage('img/buttonResumeHover.png')
+
 	-- Game Assets: Audio
 	backgroundSound = love.audio.newSource('sound/backgroundMusic.mp3', 'stream')
+	backgroundSound:setLooping(true)
+
 	aquariumSound = love.audio.newSource('sound/aquarium.mp3', 'stream')
+	aquariumSound:setLooping(true)
+
 	gameoverSound = love.audio.newSource('sound/gameoverSound.wav', 'stream')
 	bubbleBarSound = love.audio.newSource('sound/bubbleBar.mp3', 'stream')
 	rainbowSexSound = love.audio.newSource('sound/crazy.mp3', 'stream')
@@ -377,6 +384,29 @@ function love.draw()
 	if tangoing > 0 then
 		love.graphics.pop()
 	end
+
+	if paused then
+		love.graphics.setColor(0, 0, 0, 150)
+		love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+
+		love.graphics.setColor(255, 255, 255, 255)
+
+		love.graphics.draw(spriteLogo, love.graphics.getWidth() / 2, 200, math.cos(gt / 4), 1, 1, 160, 160)
+
+		local x, y = love.mouse.getX(), love.mouse.getY()
+		
+		if math.inside(x, y, 470, 313, 340, 100) then
+			love.graphics.draw(pauseResumeButtonHover, 0, -327)
+		else
+			love.graphics.draw(pauseResumeButton, 0, -327)
+		end
+
+		if math.inside(x, y, 470, 440, 340, 100) then
+			love.graphics.draw(menuButtonQuitHover, 0, -200)
+		else
+			love.graphics.draw(menuButtonQuit, 0, -200)
+		end
+	end
 end
 
 function love.gameover()
@@ -393,7 +423,8 @@ function love.restart()
 	love.audio.rewind(gameoverSound)
 	
 	if menu then
-		love.audio.resume(backgroundSound)
+		love.audio.resume(aquariumSound)
+		love.audio.stop(backgroundSound)
 		love.audio.stop(gameoverSound)
 	end
 
@@ -489,16 +520,29 @@ function love.mousepressed(x, y, key)
 				love.restart()
 			elseif math.inside(x, y, 500, 600, gameoverQuit:getWidth() * scale.x, gameoverQuit:getHeight() * scale.y) then
 				menu = true
+				love.restart()
 				gameover = 0
 			end
 		end
 	elseif tutorial then
 		if key == 'l' then
-			if math.inside(love.mouse.getX(), love.mouse.getY(), 513, 568, 241, 67) then
+			if math.inside(x, y, 513, 568, 241, 67) then
 				tutorial = false
 				love.restart()
 				audio.play(backgroundSound)
 			end
 		end
-	end 
+	elseif paused then
+		if key == 'l' then
+			-- Resume
+			if math.inside(x, y, 470, 313, 340, 100) then
+				paused = false
+			-- Quit
+			elseif math.inside(x, y, 470, 440, 340, 100) then
+				menu = true
+				paused = false
+				love.restart()
+			end
+		end
+	end
 end
