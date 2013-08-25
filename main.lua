@@ -98,6 +98,7 @@ function love.load()
 	menu = true
 	tutorial = false
 	credits = false
+	paused = false
 
 	-- Game Objects
 	koi1 = Koi.create()
@@ -140,6 +141,10 @@ end
 function love.update(dt)
 	gt = (gt + dt)
 	delta = dt
+
+	if paused then
+		return
+	end
 
 	fx.pulse:send( "time", gt )
 	fx.menuPulse:send( "time", gt )
@@ -266,7 +271,7 @@ function love.draw()
 		love.graphics.setColor(255, 255, 255, 200)
 		love.graphics.draw(menuBG, 0, 0)
 		love.graphics.setPixelEffect()
-		
+
 		return
 	end
 
@@ -431,7 +436,7 @@ function love.restart()
 end
 
 function love.keypressed(key)
-	if key == ' ' then
+	if key == ' ' and not paused then
 		if bubbleBar >= bubbleBarMax then
 			love.audio.pause(bubbleBarSound)
 			love.audio.rewind(bubbleBarSound)
@@ -454,6 +459,8 @@ function love.keypressed(key)
 			
 			love.audio.resume(aquariumSound)
 		end
+	elseif (key == 'p' or key == 'escape') and (not menu and not tutorial and not credits) then
+		paused = not paused
 	end
 end
 
