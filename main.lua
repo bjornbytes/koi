@@ -1,5 +1,6 @@
 require 'util'
 require 'pulse'
+require 'starfish'
 require 'koi'
 require 'puffer'
 require 'shark'
@@ -52,6 +53,10 @@ function love.load()
 	waterLight = love.graphics.newImage('waterLight.png')
 	sprBubble = love.graphics.newImage('bubble.png')
 
+	for i = 1, 6 do
+		StarFish.create()
+	end
+
 	bubbleBar = 0
 	bubbleBarDisplay = 0
 
@@ -60,6 +65,7 @@ function love.load()
 
 	tangoing = 0
 	kinky = false
+
 end
 
 function love.update(dt)
@@ -119,13 +125,20 @@ end
 function love.draw()
 	love.graphics.reset()
 
-	love.graphics.setPixelEffect( fx.pulse )
+	love.graphics.setPixelEffect(fx.pulse)
 	love.graphics.setColor(255, 255, 255, 50)
 	love.graphics.draw(sandTile, 0, 0)
-	love.graphics.setPixelEffect( )
+	love.graphics.setPixelEffect()
+	
+	love.graphics.setColor(255, 255, 255, 60)
+	for _, sf in pairs(starfish) do
+		sf:draw()
+	end
+
 
 	love.graphics.setColor(255, 255, 255, 100)
 	love.graphics.draw(sandTile, 0, 0)
+
 	
 	love.graphics.setColor(0, 0, 200, 128)
 	love.graphics.rectangle('fill', 60, 10, (love.graphics.getWidth() - 120) * (bubbleBarDisplay / 20), 40)
@@ -160,6 +173,7 @@ function love.draw()
 
 	love.graphics.setColor(255, 255, 255, 160)
 	love.graphics.draw(water, 0, 0)
+
 end
 
 function love.gameover()
